@@ -1,5 +1,45 @@
 <script setup lang="ts">
+import {useApiFetchRequest} from "~/composables/useApiFetch";
+import type {GithubUserSearchResponse} from "~/types/github";
+
 definePageMeta({})
+
+type KnowledgeItem = {
+  id: number;
+  title: string;
+  subtitle: string;
+  show?: boolean;
+  content: string;
+  created_at: Date
+}
+
+type FetchKnowledgeRes = {
+  code: number
+  data: {
+    data: KnowledgeItem[]
+  }
+  message: string
+}
+
+const { data, error } = await useApiFetchRequest<FetchKnowledgeRes>(
+    `http://localhost:8081/api/v1/knowledge`,
+    {
+      method: 'GET',
+      server: true,
+      baseURL: undefined,
+      auth: false
+    }
+)
+
+const knowledgeList = ref<KnowledgeItem[]>([])
+
+onMounted(() => {
+  console.log(data.value)
+  if (data.value.code === 200) {
+    data.value.data.data.forEach((i: KnowledgeItem) => knowledgeList.value.push(i))
+  }
+})
+
 </script>
 
 <template>
@@ -23,17 +63,15 @@ definePageMeta({})
 
 
     <v-card
-        v-for="i in 100"
+        v-for="i in knowledgeList"
         variant="flat"
         hover
-        :title="`文章 ${i}`"
-        :subtitle="`Provide it as the value of ${i}`"
+        :title="i.title"
+        :subtitle="i.subtitle"
         class="mt-3"
     >
       <v-card-text>
-        Aliasing allows you to use built-in Vuetify components as a baseline for your custom implementations. To get
-        started, import the component that you want to extend. Provide it as the value of a unique key that is used for
-        the virtual component’s name
+        {{ i.content }}
       </v-card-text>
     </v-card>
   </div>

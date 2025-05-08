@@ -9,6 +9,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new AllExceptionFilter());
   app.setGlobalPrefix('/api')
+  app.enableCors({
+    origin: ['*'], // 前端 SSR 项目的地址
+    credentials: true, // 如果使用 cookie/token
+  });
   app.enableVersioning({
     type: VersioningType.URI
   })

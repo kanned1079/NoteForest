@@ -1,0 +1,20 @@
+{
+  "welcome": "Welcome",
+  "menu": {
+    "home": "Home",
+    "title": "Menu",
+    "user": "User Portal",
+    "knowledge": "Knowledge Base",
+    "moment": "Tweets",
+    "notice": "Notifications"
+  },
+  "aboutMe": {
+    "title": "About",
+    "nameSubTitle": "Independent Developer",
+    "selfIntroduction": {
+      "p1": "I am an independent developer, familiar with Vue, React, and Nuxt. I can also develop backend services using Golang and NestJS. I have knowledge of Linux operation and maintenance as well as virtualization, and I am able to independently deploy full-stack projects.",
+      "p2": "I have experience in graphic design (using Photoshop and Adobe Illustrator) and video editing (using Final Cut Pro X). I pay attention to the aesthetic appeal of the interface and the user experience. I like to bring my creative ideas to life through code and visual presentations.",
+      "p3": "I am passionate about building products with a human touch, and I also attach great importance to the quality of engineering and the user experience. Here, I will share my projects, experiences, and inspirations, and I hope to explore the boundaries of technology and creation together with you."
+    }
+  }
+}

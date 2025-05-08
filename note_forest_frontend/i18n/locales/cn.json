@@ -1,0 +1,33 @@
+{
+  "welcome": "欢迎",
+  "menu": {
+    "home": "首页",
+    "title": "选单",
+    "user": "用户门户",
+    "knowledge": "知识库",
+    "moment": "推文",
+    "notice": "通知"
+  },
+  "aboutMe": {
+    "title": "关于",
+    "nameSubTitle": "个人开发者",
+    "selfIntroduction": {
+      "p1": "  我是一名个人开发者，熟悉 Vue、React、Nuxt，也能用 Golang 和 NestJS 开发后端服务。了解 Linux 运维和虚拟化，能独立部署全栈项目。",
+      "p2": "  拥有平面设计（Ps、Ai）和视频剪辑（FCPX）经验，注重界面美感与用户体验。喜欢把创意通过代码和视觉呈现出来。",
+      "p3": "我热衷于构建有温度的产品，也注重工程质量与用户体验。在这里，我将分享我的项目、经验与灵感，希望与你共同探索技术与创作的边界。"
+    },
+    "subscribe": "关注和订阅",
+    "subscribeDescription": "欢迎来关注我的社交媒体和Github，如果需要合作请通过下面的方式来联系我。",
+    "wechat": "微信",
+    "phone": "手机号码",
+    "viewOnGithub": "在 Github 上查看"
+  },
+  "profile": {
+    "yourInfo": "您的信息",
+    "userId": "您在本站的用户唯一 ID，不能修改。",
+    "usernameHint": "这是您在发表评论时使用的用户名，如果您没有设置，将显示为邮箱地址。",
+    "editUsername": "轻点以添加或修改",
+    "changePwd": "修改密码",
+    "resetPwdHint": "您可以轻点此处以重置密码"
+  }
+}

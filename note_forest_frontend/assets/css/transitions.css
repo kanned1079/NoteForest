@@ -1,0 +1,15 @@
+/* assets/css/transitions.css */
+.layout-fade-enter-active,
+.layout-fade-leave-active {
+    transition: all 0.3s ease-in-out;
+}
+
+.layout-fade-enter-from {
+    opacity: 0;
+    /*transform: translateY(20px); !* 从下方偏移 20px *!*/
+}
+
+.layout-fade-leave-to {
+    opacity: 0;
+    /*transform: translateY(-10px); !* 可选：退出时往上移一点 *!*/
+}

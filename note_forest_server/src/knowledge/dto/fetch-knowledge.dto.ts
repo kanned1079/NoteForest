@@ -1,4 +1,4 @@
-import {IsEmail, IsOptional, IsString, IsEnum, MinLength, IsNumber} from 'class-validator';
+import {IsEmail, IsOptional, IsString, IsEnum, MinLength, IsNumber, IsBoolean} from 'class-validator';
 
 export class FetchKnowledgeDto {
     @IsOptional()
@@ -12,4 +12,8 @@ export class FetchKnowledgeDto {
     @IsOptional()
     @IsString()
     search?: string;
+
+    @IsOptional()
+    @IsBoolean()
+    list?: boolean
 }

@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import {useApiFetchRequest} from "~/composables/useApiFetch";
+import {useCommonFetch} from "~/composables/useCommonFetch";
+import {userLogin} from "~/api/user";
+import {useI18n} from "vue-i18n";
+const {locale} = useI18n()
+
+const prop = defineProps<{
+  closeLoginCard: () => void
+}>()
 
 // 表单验证状态
 const valid = ref(false)
@@ -33,13 +42,19 @@ const passwordRules = [
 ]
 
 // 提交表单方法
-const submitForm = () => {
+const submitForm = async () => {
   if (valid.value) {
     console.log('登录表单提交', {
       email: email.value,
       password: password.value
     })
     // 登录逻辑可在此调用 API
+    const code = await userLogin(email.value, password.value)
+    console.log(code)
+    if (code === 200) {
+      prop.closeLoginCard()
+      navigateTo({path: `/${locale.value}/profile`})
+    }
   }
 }
 </script>

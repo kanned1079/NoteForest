@@ -75,6 +75,7 @@ const menuClick = (path: string) => {
 }
 
 const showLoginCard = ref<boolean>(false)
+const closeLoginCard = () => showLoginCard.value = false
 
 const loginOrRegClick = () => {
   if (userStore.user.id <= 0) {
@@ -166,7 +167,9 @@ onMounted(() => {
         v-model="showLoginCard"
         width="auto"
     >
-      <LoginForm />
+      <LoginForm
+        :close-login-card="closeLoginCard"
+      ></LoginForm>
     </v-dialog>
   </div>
 

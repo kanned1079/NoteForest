@@ -4,10 +4,14 @@ import type {User} from "~/types/user";
 const useUserStore = defineStore('userStore', () => {
     const isAuthed = ref<boolean>(true)
     const user = ref<User>({
-        id: 1,
-        email: 'kanned1079@icloud.com',
-        username: 'kanned1079',
-        role: 'admin'
+        // id: 1,
+        // email: 'kanned1079@icloud.com',
+        // username: 'kanned1079',
+        // role: 'admin'
+        id: 0,
+        email: '',
+        username: '',
+        role: 'user'
     })
 
     const clearUserData = () => {
@@ -17,6 +21,8 @@ const useUserStore = defineStore('userStore', () => {
             username: '',
         } as User)
         isAuthed.value = false
+        const token = useCookie('token')
+        token.value = null // 或 ''
     }
 
     return {
@@ -25,9 +31,7 @@ const useUserStore = defineStore('userStore', () => {
         clearUserData
     }
 }, {
-    persist: {
-        storage: true
-    }
+    persist: true
 })
 
 export default useUserStore

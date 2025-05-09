@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import useUserStore from "~/store/userStore";
-import { useI18n } from 'vue-i18n';
-import LoginForm from "~/components/LoginForm.vue"; // 假设你使用的是 vue-i18n
+import LoginForm from "~/components/LoginForm.vue";
+import {useI18n} from "vue-i18n"
+
+import {useRouter} from "#vue-router";
+
+const {locale} = useI18n()
+const router = useRouter()
 
 definePageMeta({
   layout: 'empty',
@@ -25,6 +30,15 @@ const changePwdClick = () => {
   console.log('bbb');
   showResetPwdDialog.value = true
 };
+
+onMounted(() => {
+  if (userStore.isAuthed && userStore.user.id >= 0) {
+
+  } else  {
+    router.replace({path: `/${locale.value}/`})
+    console.log('111')
+  }
+})
 </script>
 
 <template>
@@ -39,7 +53,7 @@ const changePwdClick = () => {
           <!-- 用户 ID 字段 -->
           <div class="field-item" @click="usernameClick">
             <p class="field-title">
-              # {{ userStore.user.id || 7 }}
+              # {{ userStore.user.id || 'Un' }}
             </p>
             <p class="field-hint">{{ t('profile.userId') }}</p>
           </div>
@@ -47,7 +61,7 @@ const changePwdClick = () => {
           <div class="field-item">
             <div class="field-content" @click="usernameClick">
               <p class="field-title">
-                {{ userStore.user.username || 'kanned1079' }}
+                {{ userStore.user.username || '' }}
               </p>
               <div class="field-title-hint">
                 <v-icon class="ml-2">mdi-square-edit-outline</v-icon>

@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import {UserLoginDto} from "./dto/auth-user";
 import {NotFoundError} from "rxjs";
 import { JwtService } from '@nestjs/jwt';
+import {ResponseCode} from "../common/constants/response-code.enum";
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
     }
 
     async login(userLoginDto: UserLoginDto) {
+        console.log('Login req', userLoginDto)
         const {email, password} = userLoginDto;
         const user = await this.userRepository.findOne({
             where: {
@@ -37,15 +39,27 @@ export class UserService {
                 }
                 let token = this.jwtService.sign(payload)
                 return {
-                    ...user,
-                    password: '',
-                    token: token
+                    code: ResponseCode.OK,
+                    message: 'ok',
+                    user: {
+                        ...user,
+                        password: '',
+                        token: token
+                    }
                 };
             } else {
-                throw new ConflictException('password is not match')
+                // throw new ConflictException('password is not match')
+                return {
+                    code: ResponseCode.Conflict,
+                    message: 'password is not match'
+                }
             }
         } else {
-            throw new NotFoundException("user is not exist, please register first.")
+            // throw new NotFoundException("user is not exist, please register first.")
+            return {
+                code: ResponseCode.NotFound,
+                message: 'user is not exist, please register first.'
+            }
         }
     }
 

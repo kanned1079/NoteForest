@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         'pinia-plugin-persistedstate/nuxt',
     ],
     i18n: {
-        strategy: 'prefix_and_default',
+        strategy: 'prefix',
         defaultLocale: 'cn',
         locales: [
             { code: 'en', name: 'English', file: 'en.json' },
@@ -39,6 +39,11 @@ export default defineNuxtConfig({
         layoutTransition: {
             name: 'fade',
             mode: 'out-in'
+        }
+    },
+    runtimeConfig: {
+        public: {
+            apiBase: 'http://localhost:8081'
         }
     },
     css: ['~/assets/css/transitions.css']

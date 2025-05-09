@@ -12,7 +12,8 @@ export function useApiFetchRequest<T>(
 
     // 构造 headers
     const headers: Record<string, string> = {
-        ...(options.headers || {})
+        ...(options.headers || {}),
+        'Access-Control-Allow-Origin': '*',
     }
 
     if (options.auth && token.value) {

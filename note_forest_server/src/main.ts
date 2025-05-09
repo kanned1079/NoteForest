@@ -10,8 +10,11 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionFilter());
   app.setGlobalPrefix('/api')
   app.enableCors({
-    origin: ['*'], // 前端 SSR 项目的地址
-    credentials: true, // 如果使用 cookie/token
+    origin: (origin, callback) => {
+      // 只要请求带了 Origin，就允许
+      callback(null, origin || '*');
+    },
+    credentials: true,
   });
   app.enableVersioning({
     type: VersioningType.URI

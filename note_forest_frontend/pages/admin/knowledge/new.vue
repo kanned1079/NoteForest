@@ -12,7 +12,11 @@ import {type ConfigOption, MdEditor} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
 import {config as mdEditorConfig} from "md-editor-v3"
 import userStore from "~/store/userStore";
+import {useI18n} from "vue-i18n";
+import {commitNewDocument} from "~/api/document";
+import type {DocumentItem} from "~/types/doc";
 
+const {t, locale} = useI18n()
 const router = useRouter()
 const themeStore = useThemeStore()
 
@@ -185,24 +189,27 @@ mdEditorConfig({
   },
 }  as ConfigOption);
 
-const docData = ref({
-  title: '新建文档',
+const docData = ref<DocumentItem>({
+  title: '',
   subtitle: '',
+  category: '',
+  content: '',
 })
 
 const state = reactive({
-  text: '',
   previewTheme: 'github'
 });
 
 const showCancelConfirmDialog = ref<boolean>(false)
 
-const commitDocClick = () => {
+const commitDocClick = async () => {
   console.log('commit doc')
+  const code = await commitNewDocument(docData.value)
+  console.log('new: ', code)
 }
 
 onMounted(() => {
-  docData.value.title = '未命名文档'
+  docData.value.title = locale.value==='cn'?'未命名文档':'Untitled document'
 })
 </script>
 
@@ -231,8 +238,15 @@ onMounted(() => {
               v-model="docData.subtitle"
           ></v-text-field>
 
+          <v-text-field
+              density="compact"
+              variant="outlined"
+              label="分类"
+              v-model="docData.category"
+          ></v-text-field>
+
           <MdEditor
-              v-model="state.text"
+              v-model="docData.content"
               :language="themeStore.lang"
               :theme="themeStore.isDarkModeEnabled?'dark':''"
               :preview-theme="state.previewTheme"
@@ -258,8 +272,6 @@ onMounted(() => {
 
           取消</v-btn>
       </v-card-actions>
-
-
 
     </v-card>
 

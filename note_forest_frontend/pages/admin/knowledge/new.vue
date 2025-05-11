@@ -204,7 +204,10 @@ const showCancelConfirmDialog = ref<boolean>(false)
 
 const commitDocClick = async () => {
   console.log('commit doc')
-  const code = await commitNewDocument(docData.value)
+  const {code} = await commitNewDocument(docData.value)
+  if (code === 200) {
+    router.back()
+  }
   console.log('new: ', code)
 }
 

@@ -20,13 +20,14 @@ export const commitNewDocument = async (doc: DocumentItem): { code: number } => 
             ...doc
         }
     })
+    console.log(data)
     if (!error) {
         if (data.data) {
             let _data: UniversalApiResponse<any> = data?.data
             if (_data.code === 200) {
                 console.log(_data)
             }
-            return _data.code
+            return {code: _data.code}
         }
     } else {
         return {code: 500}

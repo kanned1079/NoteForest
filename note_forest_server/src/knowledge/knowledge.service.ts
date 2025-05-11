@@ -20,7 +20,6 @@ export class KnowledgeService {
                 private readonly jwtService: JwtService,) {
     }
 
-
     async create(createKnowledgeDto: CreateKnowledgeDto) {
         // const {email, password} = createUserDto;
         const {title, subtitle, category, content} = createKnowledgeDto
@@ -86,7 +85,6 @@ export class KnowledgeService {
         const queryBuilder: SelectQueryBuilder<Knowledge> = this.knowledgeRepository.createQueryBuilder('knowledge');
 
         if (fetchKnowledgeDto.list) {
-            // 如果是列表模式，不查询 content 字段
             queryBuilder.select([
                 'knowledge.id',
                 'knowledge.title',
@@ -94,7 +92,6 @@ export class KnowledgeService {
                 'knowledge.category',
                 'knowledge.created_at',
                 'knowledge.updated_at',
-                // 可根据需要添加更多字段，但不包含 content
             ]);
         }
 
@@ -103,6 +100,7 @@ export class KnowledgeService {
         }
 
         const [knowledges, total] = await queryBuilder
+            .orderBy('knowledge.created_at', 'DESC') // ✅ 按照创建时间倒序排序
             .skip(skip)
             .take(size)
             .getManyAndCount();

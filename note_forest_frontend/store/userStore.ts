@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import type {User} from "~/types/user";
+import {useI18n} from "vue-i18n";
 
 const useUserStore = defineStore('userStore', () => {
     const isAuthed = ref<boolean>(true)
@@ -25,10 +26,17 @@ const useUserStore = defineStore('userStore', () => {
         token.value = null // 或 ''
     }
 
+    const logout = () => {
+        const {locale} = useI18n()
+        clearUserData()
+        navigateTo({path: `/${locale.value}/`})
+    }
+
     return {
         user,
         isAuthed,
-        clearUserData
+        clearUserData,
+        logout
     }
 }, {
     persist: true

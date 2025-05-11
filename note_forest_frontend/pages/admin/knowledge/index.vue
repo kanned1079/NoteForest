@@ -1,22 +1,35 @@
 <script setup lang="ts">
+import LoginForm from "~/components/LoginForm.vue";
+
 definePageMeta({
   layout: 'empty',
   pageTransition: {
     name: 'layout-fade'
   }
 })
-import { ref, shallowRef, onMounted, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { fetchAllDocuments } from '~/api/document'
-import type { DocumentItem } from '~/types/doc'
+import {ref, shallowRef, onMounted, watch} from 'vue'
+import {useI18n} from 'vue-i18n'
+import {fetchAllDocuments} from '~/api/document'
+import type {DocumentItem} from '~/types/doc'
 
-const { locale } = useI18n()
+const {locale} = useI18n()
 
 // 表格数据与分页
 const knowledgeArr = ref<DocumentItem[]>([])
 const total = ref(0)
 const page = ref(1)
 const size = ref(10)
+
+const dataIsLoading = ref<boolean>(true)
+const showSearchDialog = ref<boolean>(false)
+const handleKeydown = (e: KeyboardEvent) => {
+  // 对于 Mac 和 Windows，Alt 键会被统一识别为 e.altKey
+  if (e.altKey && e.key === 'Enter') {
+    showSearchDialog.value = true
+    console.log('Alt/Option + Enter pressed')
+  }
+}
+
 
 // 当前记录、编辑状态
 const record = ref<DocumentItem>({
@@ -28,22 +41,30 @@ const record = ref<DocumentItem>({
 })
 const dialog = shallowRef(false)
 const isEditing = shallowRef(false)
+const showFetchErr = ref<boolean>(false)
 
 // 表头
 const headers = [
-  { title: '标题', key: 'title' },
-  { title: '副标题', key: 'subtitle' },
-  { title: '分类', key: 'category' },
-  { title: '创建时间', key: 'created_at' },
-  { title: '操作', key: 'actions', sortable: false },
+  {title: '标题', key: 'title'},
+  {title: '副标题', key: 'subtitle'},
+  {title: '分类', key: 'category'},
+  {title: '创建时间', key: 'created_at'},
+  {title: '操作', key: 'actions', sortable: false},
 ]
+
+const searchContent = ref<string>('')
+
 
 // 获取远程数据
 const fetchData = async () => {
-  const res = await fetchAllDocuments(page.value, size.value, '', false)
+  dataIsLoading.value = true
+  const res = await fetchAllDocuments(page.value, size.value, searchContent.value ? searchContent.value : '', false)
   if (res.code === 200 && Array.isArray(res.data)) {
     knowledgeArr.value = res.data
     total.value = res.total || 0
+    setTimeout(() => dataIsLoading.value = false, 300)
+  } else {
+    showFetchErr.value = true
   }
 }
 
@@ -52,7 +73,7 @@ watch([page, size], fetchData)
 
 // 编辑操作
 function edit(item: DocumentItem) {
-  record.value = { ...item }
+  record.value = {...item}
   isEditing.value = true
   dialog.value = true
 }
@@ -63,145 +84,251 @@ function remove(id: number) {
   total.value--
 }
 
+const getSelectSize = computed<{ title: string, value: number }[]>(() => {
+  let sizeDataRaw: number[] = [5, 10, 20, 50, 100, 200]
+  let displayColumn: { title: string, value: number }[] = []
+  sizeDataRaw.forEach((nums: number) => displayColumn.push({
+    title: `${nums} 条数据 / 页`,
+    value: nums
+  }))
+  return displayColumn
+})
+
+const setSize = (_size: number) => {
+  console.log('size:', size)
+  page.value = 1
+  size.value = _size
+  localStorage.setItem('size', JSON.stringify(_size))
+  fetchData()
+}
+
+const isEmpty = ref<boolean>(false)
+const applySearch = () => {
+  if (searchContent.value.toString().trim()) {
+    isEmpty.value = false
+    console.log(searchContent.value)
+    fetchData()
+    setTimeout(() => showSearchDialog.value = false, 500)
+  } else {
+    isEmpty.value = true
+  }
+}
+
+const resetSearch = () => {
+  if (searchContent.value.toString().trim()) {
+    searchContent.value = ''
+    fetchData()
+  }
+}
+
+onBeforeMount(() => {
+  const sizeFromLocal = localStorage.getItem('size')
+  if (sizeFromLocal) {
+    size.value = JSON.parse(sizeFromLocal) || 10
+  }
+})
+
 // 初始化加载
-onMounted(fetchData)
+onMounted(() => {
+  showFetchErr.value = true
+  fetchData()
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>
-<div class="root">
-  <v-card
-      variant="outlined"
-      :border="0"
-      :subtitle="'你可以在这里管理所有的文章，包括编写、修改、删除等，支持MD语法。'"
-  >
-    <template v-slot:title>
-      写文章
-    </template>
+  <div class="root">
+    <v-card
+        variant="outlined"
+        :border="0"
+        :subtitle="'你可以在这里管理所有的文章，包括编写、修改、删除等，支持MD语法。'"
+    >
+      <template v-slot:title>
+        文章列表
+      </template>
 
-    <template v-slot:item>
-      <div class="mt-2">
-        <v-btn
-            color="primary"
-            variant="flat"
-            @click="navigateTo({path: `/${locale}/admin/knowledge/new`})"
-        >
-          <template v-slot:prepend>
-            <v-icon>mdi-plus</v-icon>
-          </template>
-          编写新文章
-        </v-btn>
-        <v-btn
-            color="primary"
-            variant="tonal"
-            class="ml-3"
-        >
-          <template v-slot:prepend>
-            <v-icon>mdi-file-search-outline</v-icon>
-          </template>
-          搜索文章
-        </v-btn>
-      </div>
-    </template>
-  </v-card>
+      <template v-slot:item>
+        <div class="mt-2">
+          <v-btn
+              color="primary"
+              variant="flat"
+              @click="navigateTo({path: `/${locale}/admin/knowledge/new`})"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-plus</v-icon>
+            </template>
+            编写新文章
+          </v-btn>
+          <v-btn
+              color="primary"
+              variant="tonal"
+              class="ml-3"
+              @click="showSearchDialog=true"
+              style="text-transform: none"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-file-search-outline</v-icon>
+            </template>
+            <template v-slot:append>
+              <v-icon size="small">mdi-apple-keyboard-option</v-icon>
+              +
+              Enter
+            </template>
+            搜索文章
+          </v-btn>
 
-  <v-card
-    variant="outlined"
-    :border="0"
-  >
+          <v-btn
+              color="default"
+              variant="tonal"
+              class="ml-3"
+              style="opacity: 0.7"
+              @click="resetSearch"
+          >
+            <template v-slot:prepend>
+              <v-icon>mdi-reload</v-icon>
+            </template>
+            重置搜索
+          </v-btn>
+        </div>
+      </template>
+    </v-card>
 
-    <template v-slot:item></template>
+    <v-card
+        variant="outlined"
+        :border="0"
+    >
 
-    <v-card-item class="mt-2">
-      <v-sheet rounded border>
-        <v-data-table
-            style="background-color: rgba(0,0,0,0)"
-            :headers="headers"
-            :items="knowledgeArr"
-            class="mt-0"
-            item-value="id"
-            no-data-text="暂无数据"
-        >
-          <template v-slot:item.created_at="{ value }">
-            {{ new Date(value).toLocaleDateString() }}
-          </template>
+      <template v-slot:item></template>
 
-          <template v-slot:item.actions="{ item }">
-            <v-icon size="small" class="me-2" @click="edit(item)">mdi-pencil</v-icon>
-            <v-icon size="small" color="red" @click="remove(item.id)">mdi-delete</v-icon>
-          </template>
-        </v-data-table>
-      </v-sheet>
-    </v-card-item>
+      <v-card-item class="mt-2">
+        <v-sheet rounded border>
+          <v-data-table
+              :loading="dataIsLoading"
+              style="background-color: rgba(0,0,0,0)"
+              :headers="headers"
+              :items="knowledgeArr"
+              :items-per-page="size"
+              class="mt-0"
+              item-value="id"
+              no-data-text="暂无数据"
+              density="comfortable"
+              hide-default-footer
+              striped
+          >
+            <template v-slot:item.created_at="{ value }">
+              {{ new Date(value).toLocaleDateString() }}
+            </template>
 
-    <v-card-actions class="justify-space-between px-4">
-      <div class="d-flex align-center">
-        <span class="mr-2">每页显示</span>
-        <v-select
-            v-model="size"
-            :items="[5, 10, 20, 50]"
-            dense
-            hide-details
-            style="width: 80px"
-        ></v-select>
-        <span class="ml-2">条</span>
-      </div>
+            <template v-slot:item.actions="{ item }">
+              <v-icon size="medium" class="me-2" @click="edit(item)">mdi-pencil</v-icon>
+              <v-icon size="medium" color="red" @click="remove(item.id)">mdi-delete</v-icon>
+            </template>
 
-      <v-pagination
-          v-model="page"
-          :length="Math.ceil(total / size)"
-          total-visible="7"
-      ></v-pagination>
+            <template v-slot:loading>
+              <p style="font-size: 1rem; margin: 30px 0; opacity: 0.6">正在获取数据</p>
+            </template>
 
-      <div class="ml-2 text-grey">
-        共 {{ total }} 篇文章
-      </div>
-    </v-card-actions>
+          </v-data-table>
+        </v-sheet>
+      </v-card-item>
 
-    <v-dialog v-model="dialog" max-width="500">
-      <v-card
-          :subtitle="`${isEditing ? 'Update' : 'Create'} your favorite book`"
-          :title="`${isEditing ? 'Edit' : 'Add'} a Book`"
-      >
-        <template v-slot:text>
-          <v-row>
-            <v-col cols="12">
-              <v-text-field v-model="record.title" label="Title"></v-text-field>
-            </v-col>
+      <template v-slot:actions>
+        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
+          <div style="font-size: 0.8rem" class="ml-3">每页显示条目： {{ size }}</div>
+          <div style="display: flex; flex-direction: row; align-items: center" class="mr-1">
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn
+                    variant="outlined"
+                    v-bind="props"
+                    size="small"
+                    style="opacity: 0.8; margin-right: 16px"
+                >
+                  <v-icon size="small">{{ 'mdi-format-list-numbered' }}</v-icon>
+                  <p style="margin-left: 6px">显示条目数</p>
+                </v-btn>
+              </template>
 
-            <v-col cols="12" md="6">
-              <v-text-field v-model="record.author" label="Author"></v-text-field>
-            </v-col>
+              <v-list class="pa-1" density="compact">
+                <v-list-item
+                    v-for="(item, index) in getSelectSize"
+                    :key="index"
+                    @click="setSize(item.value)"
+                    class="pl-1 pr-1 custom-list-item"
+                    rounded
+                    :style="!(index===getSelectSize.length-1)?{marginBottom: '4px'}:null"
+                >
+                  <v-list-item-title class="text-caption" style="line-height: 1.2">{{ item.title }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
 
-            <v-col cols="12" md="6">
-              <v-select v-model="record.genre" :items="['Fiction', 'Dystopian', 'Non-Fiction', 'Sci-Fi']" label="Genre"></v-select>
-            </v-col>
+            <v-pagination
+                :style="total>1?{opacity: 0.8}:null"
+                variant="outlined"
+                density="comfortable"
+                v-model="page"
+                :length="Math.ceil(total / size)"
+                total-visible="7"
+                size="small"
+            ></v-pagination>
+          </div>
+        </div>
+      </template>
+    </v-card>
 
-            <v-col cols="12" md="6">
-              <v-number-input v-model="record.year" :max="adapter.getYear(adapter.date())" :min="1" label="Year"></v-number-input>
-            </v-col>
-
-            <v-col cols="12" md="6">
-              <v-number-input v-model="record.pages" :min="1" label="Pages"></v-number-input>
-            </v-col>
-          </v-row>
+    <v-snackbar
+        class="custom-snackbar"
+        v-model="showFetchErr" timeout="30000" color="success" location="top" variant="tonal"
+    >
+      <v-banner-text label="Title">
+        操作成功！
+        <template v-slot:prepend>
+          <v-icon>mdi-check-circle</v-icon>
         </template>
+      </v-banner-text>
+    </v-snackbar>
 
-        <v-divider></v-divider>
-
-        <v-card-actions class="bg-surface-light">
-          <v-btn text="Cancel" variant="plain" @click="dialog = false"></v-btn>
-
-          <v-spacer></v-spacer>
-
-          <v-btn text="Save" @click="save"></v-btn>
-        </v-card-actions>
+    <v-dialog
+        v-model="showSearchDialog"
+        width="auto"
+        @after-leave="() => {isEmpty = false}"
+    >
+      <v-card
+          class="mx-auto pb-3"
+          color="surface-light"
+          min-width="400px"
+          title="搜寻"
+          subtitle="输入您要搜寻的文章标题，支持模糊查询。"
+      >
+        <v-card-text>
+          <v-text-field
+              :loading="loading"
+              append-inner-icon="mdi-magnify"
+              density="compact"
+              label="标题（点击或按下Enter来搜寻）"
+              variant="solo"
+              hide-details
+              single-line
+              v-model="searchContent"
+              @click:append-inner="applySearch"
+              @keydown.enter="applySearch"
+          ></v-text-field>
+        </v-card-text>
       </v-card>
+
+      <v-alert class="mt-4" color="info" v-if="isEmpty">
+        <template v-slot:prepend>
+          <v-icon>mdi-information</v-icon>
+        </template>
+        搜索内容不可以为空
+      </v-alert>
     </v-dialog>
-
-  </v-card>
-
-
-</div>
+  </div>
 </template>
 
 <style scoped lang="less">
@@ -210,5 +337,17 @@ onMounted(fetchData)
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+}
+
+.custom-list-item {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  min-height: 28px !important;
+  font-size: 1rem;
+}
+
+.custom-snackbar {
+  padding: 16px !important;
+  font-size: 16px;
 }
 </style>

@@ -10,25 +10,26 @@ import type {UniversalApiResponse} from "~/types/res";
 //     user: T
 // }
 
-export const userLogin = async (email: string, password: string): { code: number } => {
+export const processUserAuth = async (email: string, password: string, type: 'login' | 'register'): { code: number } => {
     const userStore = useUserStore()
-    const {data, error} = await useCommonFetch<{ data: UniversalApiResponse<User> }>('/api/v1/user/login', {
+    const {code, data, error} = await useCommonFetch<User>(`/api/v1/user/${type}`, {
         method: 'POST',
         auth: false,
         body: {
             email, password
         }
     })
-    if (!error) {
-        if (data.data) {
-            let _data: UniversalApiResponse<User> = data?.data
-            if (_data.code === 200) {
-                Object.assign(userStore.user, _data.user)
-                userStore.isAuthed = true
-                const token = useCookie('token')
-                token.value = _data.user.token
-            }
-            return _data.code
-        }
+    if (!error && code === 200 && data) {
+        Object.assign(userStore.user, data)
+        userStore.isAuthed = true
+        const token = useCookie('token')
+        token.value = data.token
+        return {code: 200}
+    } else {
+        return {code: code}
     }
+}
+
+export const newUserRegister = async (email: string, password: string): {code: number} => {
+
 }

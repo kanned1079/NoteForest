@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import LoginForm from "~/components/LoginForm.vue";
-
 definePageMeta({
   layout: 'empty',
   pageTransition: {
@@ -59,6 +57,7 @@ const searchContent = ref<string>('')
 const fetchData = async () => {
   dataIsLoading.value = true
   const res = await fetchAllDocuments(page.value, size.value, searchContent.value ? searchContent.value : '', false)
+  console.log(res)
   if (res.code === 200 && Array.isArray(res.data)) {
     knowledgeArr.value = res.data
     total.value = res.total || 0

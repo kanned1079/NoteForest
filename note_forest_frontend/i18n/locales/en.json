@@ -16,5 +16,26 @@
       "p2": "I have experience in graphic design (using Photoshop and Adobe Illustrator) and video editing (using Final Cut Pro X). I pay attention to the aesthetic appeal of the interface and the user experience. I like to bring my creative ideas to life through code and visual presentations.",
       "p3": "I am passionate about building products with a human touch, and I also attach great importance to the quality of engineering and the user experience. Here, I will share my projects, experiences, and inspirations, and I hope to explore the boundaries of technology and creation together with you."
     }
+  },
+  "login": {
+    "loginTitle": "Log in to your account",
+    "registerTitle": "Confirm your new account",
+    "appName": "Note Forest",
+    "emailLabel": "Email Address",
+    "passwordLabel": "Enter Password",
+    "emailRequired": "The email address is required",
+    "emailInvalid": "Please enter a valid email address",
+    "passwordRequired": "The password is required",
+    "passwordShort": "The password must be at least 6 characters long",
+    "loginButton": "Login / Register",
+    "autoRegisterTip": "If you don't have an account, you will be automatically registered. Please make sure your password is entered correctly.",
+    "confirmRegisterTip": "Click to confirm the registration of your new account. Please remember your password. If you are not sure, you can re-fill in the form.",
+    "loginSuccess": "Logged in successfully",
+    "formInvalid": "The form content does not meet the requirements",
+    "userNotExist": "User does not exist",
+    "passwordError": "The password is incorrect. Please try again later.",
+    "registerSuccess": "New account registered successfully",
+    "userExists": "The user already exists. Duplicate registration is not allowed.",
+    "emailAddress": "Your email address"
   }
 }

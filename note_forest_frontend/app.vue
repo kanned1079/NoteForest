@@ -6,7 +6,7 @@ const themeStore = useThemeStore()
 const sysTheme = useTheme()
 
 onMounted(() => {
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let prefersDark: boolean = window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (prefersDark) {
     themeStore.isDarkModeEnabled = true
     sysTheme.global.name.value = themeStore.isDarkModeEnabled?'dark':'light'

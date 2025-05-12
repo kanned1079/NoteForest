@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import AboutMe from "~/components/AboutMe.vue";
 
-
-
 import CommonAside from "~/components/CommonAside.vue";
 import useThemeStore from "~/store/themeStore";
 import {useTheme} from "vuetify/framework";

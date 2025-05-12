@@ -3,6 +3,7 @@ import type {DocumentItem} from "~/types/doc";
 import {useCommonFetch} from "~/composables/useCommonFetch";
 // import type {User} from "~/types/user";
 import type {UniversalApiResponse} from "~/types/res";
+import {da} from "vuetify/locale";
 
 type FetchDocExtraField = {
     page?: number
@@ -20,7 +21,7 @@ export const commitNewDocument = async (doc: DocumentItem): { code: number } => 
             ...doc
         }
     })
-    console.log(data)
+    console.log('-----', data)
     if (!error) {
         if (data.data) {
             let _data: UniversalApiResponse<any> = data?.data
@@ -34,44 +35,56 @@ export const commitNewDocument = async (doc: DocumentItem): { code: number } => 
     }
 }
 
-export const fetchAllDocuments = async (page: number, size: number, search: string, as_list: boolean): {
-    code: number,
-    data: DocumentItem[],
+export const fetchAllDocuments = async (
     page: number,
     size: number,
-    total: number
-} => {
-    console.log('fetch doc')
-    const {data, error} = await useCommonFetch<{ data: UniversalApiResponse<DocumentItem[], FetchDocExtraField> }>('/api/v1/knowledge', {
+    search: string,
+    as_list: boolean
+): Promise<{
+    code: number
+    message?: string | null
+    data: DocumentItem[] | null
+    page?: number
+    size?: number
+    total?: number
+}> => {
+    const { data, error } = await useCommonFetch<{
+        documents?: DocumentItem[]
+        page?: number
+        size?: number
+        total?: number
+        search?: string
+    }>('/api/v1/knowledge', {
         method: 'GET',
         auth: false,
-        params: as_list ? {
-            page: page,
-            size: size,
-            search: search,
-            list: true,
-        } : {
-            page: page,
-            size: size,
-            search: search,
-        }
-    })
-    if (!error) {
-        if (data.data) {
-            let _data: UniversalApiResponse<DocumentItem[], FetchDocExtraField> = data?.data
-            if (_data.code === 200) {
-                return {
-                    code: _data.code,
-                    data: _data.data as DocumentItem[],
-                    total: _data.total
-                }
-            } {
-                return {
-                    code: _data.code
-                }
+        params: as_list
+            ? {
+                page,
+                size,
+                search,
+                list: true
             }
+            : {
+                page,
+                size,
+                search
+            }
+    })
+
+    if (error) {
+        return {
+            code: 500,
+            message: error,
+            data: null
         }
-    } else {
-        return {code: 500}
+    }
+
+    return {
+        code: 200,
+        message: 'success',
+        data: data?.documents ?? null,
+        page: data?.page,
+        size: data?.size,
+        total: data?.total
     }
 }

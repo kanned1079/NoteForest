@@ -26,18 +26,18 @@ export class KnowledgeController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.knowledgeService.findOne(+id);
+    return this.knowledgeService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtGuard, AdminGuard)
   update(@Param('id') id: string, @Body() updateKnowledgeDto: UpdateKnowledgeDto) {
-    return this.knowledgeService.update(+id, updateKnowledgeDto);
+    return this.knowledgeService.update(id, updateKnowledgeDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtGuard, AdminGuard)
   remove(@Param('id') id: string) {
-    return this.knowledgeService.remove(+id);
+    return this.knowledgeService.remove(id);
   }
 }

@@ -9,8 +9,8 @@ import {
 
 @Entity('n_knowledge')
 export class Knowledge {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid') // 自动生成 UUID
+    id: string;
 
     @Index()
     @Column({ nullable: false })

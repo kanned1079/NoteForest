@@ -6,7 +6,9 @@
     "user": "用户门户",
     "knowledge": "知识库",
     "moment": "推文",
-    "notice": "通知"
+    "notice": "通知",
+    "overview": "总覽",
+    "write": "文章管理"
   },
   "aboutMe": {
     "title": "关于",
@@ -28,6 +30,29 @@
     "usernameHint": "这是您在发表评论时使用的用户名，如果您没有设置，将显示为邮箱地址。",
     "editUsername": "轻点以添加或修改",
     "changePwd": "修改密码",
-    "resetPwdHint": "您可以轻点此处以重置密码"
+    "resetPwdHint": "您可以轻点此处以重置密码",
+    "createdAt": "您创建账户时候的时间。"
+  },
+  "login": {
+    "loginTitle": "登入到您的账户",
+    "registerTitle": "确认您的新账户",
+    "appName": "Note Forest",
+    "emailLabel": "邮箱地址",
+    "passwordLabel": "输入密码",
+    "emailRequired": "邮箱地址是必填项",
+    "emailInvalid": "请输入有效的邮箱地址",
+    "passwordRequired": "密码是必填项",
+    "passwordShort": "密码长度至少为 6 个字符",
+    "loginButton": "登入 / 注册",
+    "autoRegisterTip": "如果您没有账户，将为您自动注册，请务必确认您的密码是否输入正确。",
+    "confirmRegisterTip": "点击以确认注册您的新账户，请务必记住您的密码，如果不确定可重新填写表单。",
+    "loginSuccess": "登录成功",
+    "formInvalid": "表单内容不符合要求",
+    "userNotExist": "用户不存在",
+    "passwordError": "密码错误请稍后再试",
+    "registerSuccess": "注册新账户成功",
+    "userExists": "用户已经存在，不允许重复注册。",
+    "emailAddress": "您的邮箱地址"
   }
+
 }

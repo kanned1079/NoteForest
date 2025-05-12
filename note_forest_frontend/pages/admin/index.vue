@@ -3,10 +3,10 @@ import {useI18n} from "vue-i18n";
 
 definePageMeta({
   layout: 'empty',
-  layoutTransition: {
+  pageTransition: {
     name: 'layout-fade'
   }
-});
+})
 
 const {locale} = useI18n()
 

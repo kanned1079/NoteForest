@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import useThemeStore from "~/store/themeStore";
-
 definePageMeta({
   layout: 'empty',
-  layoutTransition: {
+  pageTransition: {
     name: 'layout-fade'
   }
-});
+})
+import useThemeStore from "~/store/themeStore";
+
+
 
 import {type ConfigOption, MdEditor} from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
@@ -253,6 +254,7 @@ onMounted(() => {
               :language="themeStore.lang"
               :theme="themeStore.isDarkModeEnabled?'dark':''"
               :preview-theme="state.previewTheme"
+              style="z-index: 100000"
           />
         </div>
 
@@ -314,11 +316,12 @@ onMounted(() => {
 }
 
 .md-editor {
+  z-index: 100000 !important;
   --md-border-color: #7c7c7c !important;
   border-radius: 4px;
   border: #919191 solid 1px;
   --md-border-active-color: #000 !important;
-  height: calc(100vh - 400px);
+  height: calc(100vh - 450px);
   --md-bk-color: rgba(0,0,0,0.0) !important;
 }
 

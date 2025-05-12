@@ -8,7 +8,7 @@ definePageMeta({
 
 <template>
 <div class="root">
-  <MainPageQuickNavi />
+  <MainPageQuickNavi :overview="true"/>
 </div>
 </template>
 

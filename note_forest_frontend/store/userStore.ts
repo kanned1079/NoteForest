@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import type {User} from "~/types/user";
 import {useI18n} from "vue-i18n";
+import router from "#app/plugins/router";
 
 const useUserStore = defineStore('userStore', () => {
     const isAuthed = ref<boolean>(true)
@@ -9,27 +10,28 @@ const useUserStore = defineStore('userStore', () => {
         // email: 'kanned1079@icloud.com',
         // username: 'kanned1079',
         // role: 'admin'
-        id: 0,
+        id: '',
         email: '',
-        username: '',
+        username: null,
         role: 'user'
     })
 
     const clearUserData = () => {
+        console.log('清除用户数据')
+        isAuthed.value = false
         Object.assign(user.value, {
             id: 0,
             email: '',
             username: '',
         } as User)
-        isAuthed.value = false
         const token = useCookie('token')
         token.value = null // 或 ''
     }
 
     const logout = () => {
-        const {locale} = useI18n()
+        console.log('登出操作')
         clearUserData()
-        navigateTo({path: `/${locale.value}/`})
+        useRouter().replace({path: '/'})
     }
 
     return {

@@ -23,35 +23,33 @@ type MenuItem = {
 const items = computed<MenuItem[]>(() => {
   return !(userStore.isAuthed && userStore.user.role==='admin')?[
     {
-      text: t('menu.home'),
+      text: 'menu.home',
       icon: 'mdi-home',
       path: '/'
     },
     {
-      text: t('menu.user'),
+      text: 'menu.user',
       icon: 'mdi-account',
-      subtitle: t('menu.user'),
       path: '/profile'
     },
     {
-      text: t('menu.knowledge'),
+      text: 'menu.knowledge',
       icon: 'mdi-book',
       path: '/knowledge'
     },
   ]:[
     {
-      text: '概览',
+      text: 'menu.overview',
       icon: 'mdi-view-dashboard-variant',
       path: '/admin'
     },
     {
-      text: t('menu.user'),
+      text: 'menu.user',
       icon: 'mdi-account',
-      subtitle: t('menu.user'),
       path: '/profile'
     },
     {
-      text: '写文章',
+      text: 'menu.write',
       icon: 'mdi-book',
       path: '/admin/knowledge'
     },
@@ -75,7 +73,7 @@ const menuClick = (path: string) => {
 }
 
 const showLoginCard = ref<boolean>(false)
-const closeLoginCard = () => showLoginCard.value = false
+const closeLoginCard = () => setTimeout(() => showLoginCard.value = false, 1000)
 
 const loginOrRegClick = () => {
   if (userStore.user.id <= 0) {
@@ -116,7 +114,7 @@ onMounted(() => {
           <div :style="{backgroundColor: theme.global.current.value.colors.primary}" class="color-desc"/>
         </div>
         <div class="profile-root">
-          <p class="username">{{ userStore.user.username ? userStore.user.username : '访客' }}</p>
+          <p class="username">{{ userStore.user.username ? userStore.user.username : userStore.isAuthed?'无用户名':'访客' }}</p>
           <p @click="loginOrRegClick" class="email">{{
               userStore.user.email ? userStore.user.email : '点击以登录或注册'
             }}</p>
@@ -137,11 +135,12 @@ onMounted(() => {
             rounded="lg"
             class="mt-2"
             @click="menuClick(item.path)"
+            density="comfortable"
         >
           <template v-slot:prepend>
             <v-icon :icon="item.icon"></v-icon>
           </template>
-          <v-list-item-title v-text="item.text"></v-list-item-title>
+          <v-list-item-title v-text="t(item.text)"></v-list-item-title>
         </v-list-item>
       </v-list>
     </div>

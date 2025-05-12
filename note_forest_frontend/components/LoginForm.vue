@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import {useApiFetchRequest} from "~/composables/useApiFetch";
-import {useCommonFetch} from "~/composables/useCommonFetch";
-import {userLogin} from "~/api/user";
+import {ref} from 'vue'
+import {processUserAuth} from "~/api/user";
 import {useI18n} from "vue-i18n";
-const {locale} = useI18n()
 
-const prop = defineProps<{
+const {locale, t} = useI18n()
+
+const props = defineProps<{
   closeLoginCard: () => void
 }>()
 
@@ -17,15 +16,18 @@ const email = ref('')
 // 密码输入
 const password = ref('')
 
+const loginCode = ref<200 | 400 | 401 | 404 | 409>(200)
+const showLoginRes = ref<boolean>(false)
+
 // 邮箱验证规则
 const emailRules = [
   (value: string) => {
     if (value) return true
-    return '邮箱地址是必填项'
+    return t('login.emailRequired')
   },
   (value: string) => {
     if (/.+@.+\..+/.test(value)) return true
-    return '请输入有效的邮箱地址'
+    return t('login.emailInvalid')
   },
 ]
 
@@ -33,27 +35,64 @@ const emailRules = [
 const passwordRules = [
   (value: string) => {
     if (value) return true
-    return '密码是必填项'
+    return t('login.passwordRequired')
   },
   (value: string) => {
     if (value.length >= 6) return true
-    return '密码长度至少为 6 个字符'
+    return t('login.passwordShort')
   },
 ]
 
+const loginTipColor = ref<'success' | 'default' | 'warning' | 'error'>('success')
+const loginTipText = ref<string>('')
+const showRegisterDialog = ref<boolean>(false)
+
 // 提交表单方法
 const submitForm = async () => {
-  if (valid.value) {
-    console.log('登录表单提交', {
-      email: email.value,
-      password: password.value
-    })
-    // 登录逻辑可在此调用 API
-    const code = await userLogin(email.value, password.value)
-    console.log(code)
-    if (code === 200) {
-      prop.closeLoginCard()
-      navigateTo({path: `/${locale.value}/profile`})
+  if (!showRegisterDialog.value) {
+    if (valid.value) {
+      const {code} = await processUserAuth(email.value, password.value, 'login')
+      if (code !== 404) showLoginRes.value = true
+      loginCode.value = code
+
+      switch (code) {
+        case 200:
+          loginTipColor.value = 'success'
+          loginTipText.value = t('login.loginSuccess')
+          props.closeLoginCard()
+          break
+        case 400:
+          loginTipColor.value = 'default'
+          loginTipText.value = t('login.formInvalid')
+          break
+        case 404:
+          showRegisterDialog.value = true
+          break
+        case 401:
+          loginTipColor.value = 'error'
+          loginTipText.value = t('login.passwordError')
+          break
+      }
+    }
+  } else {
+    const {code} = await processUserAuth(email.value, password.value, 'register')
+    showLoginRes.value = true
+    loginCode.value = code
+
+    switch (code) {
+      case 200:
+        loginTipColor.value = 'success'
+        loginTipText.value = t('login.registerSuccess')
+        props.closeLoginCard()
+        break
+      case 400:
+        loginTipColor.value = 'default'
+        loginTipText.value = t('login.formInvalid')
+        break
+      case 409:
+        loginTipColor.value = 'error'
+        loginTipText.value = t('login.userExists')
+        break
     }
   }
 }
@@ -62,10 +101,10 @@ const submitForm = async () => {
 <template>
   <v-card class="login-card-body">
     <div class="title-part">
-      <p class="login-title">登入到您的账户</p>
-      <p class="app-name">Note Forest</p>
+      <p class="login-title">{{ showRegisterDialog ? t('login.registerTitle') : t('login.loginTitle') }}</p>
+      <p class="app-name">{{ t('login.appName') }}</p>
     </div>
-    <v-card-item>
+    <v-card-item v-if="!showRegisterDialog">
       <v-form v-model="valid" class="ma-2">
         <v-row>
           <v-col cols="12">
@@ -73,7 +112,7 @@ const submitForm = async () => {
                 variant="outlined"
                 v-model="email"
                 :rules="emailRules"
-                label="邮箱地址"
+                :label="t('login.emailLabel')"
                 required
                 clearable
                 density="compact"
@@ -84,7 +123,7 @@ const submitForm = async () => {
                 variant="outlined"
                 v-model="password"
                 :rules="passwordRules"
-                label="输入密码"
+                :label="t('login.passwordLabel')"
                 type="password"
                 required
                 clearable
@@ -93,6 +132,15 @@ const submitForm = async () => {
           </v-col>
         </v-row>
       </v-form>
+    </v-card-item>
+
+    <v-card-item class="ml-2 mr-2 mb-4" v-if="showRegisterDialog">
+      <template v-slot:title style="font-weight: bold">
+        {{ email }}
+      </template>
+      <template v-slot:subtitle style="font-size: 0.8rem; font-weight: bold">
+        {{ t('login.emailAddress') }}
+      </template>
     </v-card-item>
 
     <v-card-item class="ml-2 mr-2 pt-0">
@@ -104,20 +152,42 @@ const submitForm = async () => {
           @click="submitForm"
           density="default"
       >
-        登入 / 注册
+        {{ t('login.loginButton') }}
       </v-btn>
     </v-card-item>
 
-    <v-card-item class="ml-2 mr-2 pt-0">
+    <v-card-item class="ml-2 mr-2 pt-0" v-if="!showRegisterDialog">
       <v-alert
-        density="compact"
-        style="opacity: 0.5"
+          density="compact"
+          style="opacity: 0.5"
       >
-        如果您没有账户，将为您自动注册，请务必确认您的密码是否输入正确。
+        {{ t('login.autoRegisterTip') }}
       </v-alert>
     </v-card-item>
 
+    <v-card-item class="ml-2 mr-2 pt-0" v-else>
+      <v-alert
+          density="compact"
+          style="opacity: 1"
+          color="warning"
+          variant="tonal"
+      >
+        {{ t('login.confirmRegisterTip') }}
+      </v-alert>
+    </v-card-item>
   </v-card>
+
+  <v-snackbar
+      class="custom-snackbar"
+      v-model="showLoginRes"
+      timeout="3000"
+      :color="loginTipColor"
+      location="top"
+      variant="flat"
+  >
+    <v-icon size="small" class="mr-1">mdi-information</v-icon>
+    {{ loginTipText }}
+  </v-snackbar>
 </template>
 
 <style scoped lang="less">
@@ -125,16 +195,24 @@ const submitForm = async () => {
   width: 400px;
   padding-bottom: 30px;
 }
+
 .title-part {
   text-align: center;
   margin-top: 30px;
   margin-bottom: 16px;
+
   .login-title {
     font-size: 1.4rem;
   }
+
   .app-name {
     font-size: 0.9rem;
     opacity: 0.8;
   }
+}
+
+.custom-snackbar {
+  padding: 16px !important;
+  font-size: 16px;
 }
 </style>

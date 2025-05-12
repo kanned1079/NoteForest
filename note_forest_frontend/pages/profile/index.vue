@@ -1,4 +1,11 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'empty',
+  pageTransition: {
+    name: 'layout-fade'
+  }
+});
+
 import useUserStore from "~/store/userStore";
 import LoginForm from "~/components/LoginForm.vue";
 import {useI18n} from "vue-i18n"
@@ -7,13 +14,6 @@ import {useRouter} from "#vue-router";
 
 const {locale} = useI18n()
 const router = useRouter()
-
-definePageMeta({
-  layout: 'empty',
-  layoutTransition: {
-    name: 'layout-fade'
-  }
-});
 
 const userStore = useUserStore();
 const { t } = useI18n();
@@ -32,7 +32,7 @@ const changePwdClick = () => {
 };
 
 onMounted(() => {
-  if (userStore.isAuthed && userStore.user.id >= 0) {
+  if (userStore.isAuthed && userStore.user.id) {
 
   } else  {
     router.replace({path: `/${locale.value}/`})
@@ -50,18 +50,11 @@ onMounted(() => {
       </template>
       <template v-slot:item>
         <div class="field-container">
-          <!-- 用户 ID 字段 -->
-          <div class="field-item" @click="usernameClick">
-            <p class="field-title">
-              # {{ userStore.user.id || 'Un' }}
-            </p>
-            <p class="field-hint">{{ t('profile.userId') }}</p>
-          </div>
-          <!-- 用户名 字段 -->
+
           <div class="field-item">
             <div class="field-content" @click="usernameClick">
               <p class="field-title">
-                {{ userStore.user.username || '' }}
+                {{ userStore.user.username || '未命名用户' }}
               </p>
               <div class="field-title-hint">
                 <v-icon class="ml-2">mdi-square-edit-outline</v-icon>
@@ -69,6 +62,25 @@ onMounted(() => {
               </div>
             </div>
             <p class="field-hint">{{ t('profile.usernameHint') }}</p>
+          </div>
+
+          <!-- 用户 ID 字段 -->
+          <div class="field-item">
+            <p class="field-title">
+              {{ userStore.user.id || 'undefined' }}
+            </p>
+            <p class="field-hint">{{ t('profile.userId') }}</p>
+          </div>
+          <!-- 用户名 字段 -->
+
+
+          <div class="field-item">
+            <div class="field-content">
+              <p class="field-title">
+                {{ new Date(userStore.user.created_at).toLocaleString() || 'undefined' }}
+              </p>
+            </div>
+            <p class="field-hint">{{ t('profile.createdAt') }}</p>
           </div>
         </div>
       </template>

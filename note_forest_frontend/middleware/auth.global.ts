@@ -4,7 +4,7 @@ import useUserStore from '~/store/userStore'
 export default defineNuxtRouteMiddleware((to) => {
     const userStore = useUserStore()
 
-    const isAuthed = userStore.isAuthed && userStore.user?.id > 0
+    const isAuthed = userStore.isAuthed && userStore.user.id
     const isAdmin = userStore.user?.role === 'admin'
 
     const path = to.path

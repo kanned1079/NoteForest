@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         },
         '@nuxtjs/i18n',
         '@pinia/nuxt',
+        // '@nuxtjs/axios',
         'pinia-plugin-persistedstate/nuxt',
     ],
     i18n: {

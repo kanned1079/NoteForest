@@ -21,14 +21,7 @@ export class KnowledgeService {
     }
 
     async create(createKnowledgeDto: CreateKnowledgeDto) {
-        // const {email, password} = createUserDto;
         const {title, subtitle, category, content} = createKnowledgeDto
-        // const existingUser = await this.userRepository.findOne({
-        //     where: {
-        //         email,
-        //     },
-        // });
-
         const existingKnowledge = await this.knowledgeRepository.findOne({
             where: {
                 title: title
@@ -44,10 +37,6 @@ export class KnowledgeService {
             }
         }
 
-        // const newKnowledgeItem = this.knowledgeRepository.create({
-        //     ...createKnowledgeDto
-        // })
-
         await this.knowledgeRepository.save(this.knowledgeRepository.create({
             ...createKnowledgeDto
         }))
@@ -56,35 +45,53 @@ export class KnowledgeService {
             code: ResponseCode.OK,
             message: 'new document has been saved.'
         }
-
-
-        //
-        // if (existingUser) {
-        //     if (existingUser.deleted_at === null) {
-        //         throw new ConflictException('该邮箱已被注册，无法重复注册');
-        //     }
-        // }
-        //
-        // const hashedPassword = await bcrypt.hash(password, 10);
-        // const user = this.userRepository.create({
-        //     ...createUserDto,
-        //     password: hashedPassword,
-        // });
-        // await this.userRepository.save({
-        //     ...user,
-        // });
-        // return {
-        //     message: 'register successfully.'
-        // }
     }
 
+    // async findAll(fetchKnowledgeDto: FetchKnowledgeDto) {
+    //     const { page = 1, size = 10, search = '' } = fetchKnowledgeDto;
+    //     const skip = (page - 1) * size;
+    //
+    //     const queryBuilder: SelectQueryBuilder<Knowledge> = this.knowledgeRepository.createQueryBuilder('knowledge');
+    //
+    //     if (fetchKnowledgeDto.list) {
+    //         queryBuilder.select([
+    //             'knowledge.id',
+    //             'knowledge.title',
+    //             'knowledge.subtitle',
+    //             'knowledge.category',
+    //             'knowledge.created_at',
+    //             'knowledge.updated_at',
+    //         ]);
+    //     }
+    //
+    //     if (search) {
+    //         queryBuilder.where('knowledge.title LIKE :search', { search: `%${search}%` });
+    //     }
+    //
+    //     const [knowledges, total] = await queryBuilder
+    //         .orderBy('knowledge.created_at', 'DESC') // ✅ 按照创建时间倒序排序
+    //         .skip(skip)
+    //         .take(size)
+    //         .getManyAndCount();
+    //
+    //     return {
+    //         code: ResponseCode.OK,
+    //         message: 'ok',
+    //         data: knowledges,
+    //         total,
+    //         page,
+    //         size,
+    //         search,
+    //     };
+    // }
+
     async findAll(fetchKnowledgeDto: FetchKnowledgeDto) {
-        const { page = 1, size = 10, search = '' } = fetchKnowledgeDto;
+        const { page = 1, size = 10, search = '', list } = fetchKnowledgeDto;
         const skip = (page - 1) * size;
 
-        const queryBuilder: SelectQueryBuilder<Knowledge> = this.knowledgeRepository.createQueryBuilder('knowledge');
+        const queryBuilder = this.knowledgeRepository.createQueryBuilder('knowledge');
 
-        if (fetchKnowledgeDto.list) {
+        if (list) {
             queryBuilder.select([
                 'knowledge.id',
                 'knowledge.title',
@@ -100,15 +107,13 @@ export class KnowledgeService {
         }
 
         const [knowledges, total] = await queryBuilder
-            .orderBy('knowledge.created_at', 'DESC') // ✅ 按照创建时间倒序排序
+            .orderBy('knowledge.created_at', 'DESC')
             .skip(skip)
             .take(size)
             .getManyAndCount();
 
         return {
-            code: ResponseCode.OK,
-            message: 'ok',
-            data: knowledges,
+            documents: knowledges,
             total,
             page,
             size,
@@ -116,15 +121,15 @@ export class KnowledgeService {
         };
     }
 
-    findOne(id: number) {
+    findOne(id: string) {
         return `This action returns a #${id} knowledge`;
     }
 
-    update(id: number, updateKnowledgeDto: UpdateKnowledgeDto) {
+    update(id: string, updateKnowledgeDto: UpdateKnowledgeDto) {
         return `This action updates a #${id} knowledge`;
     }
 
-    remove(id: number) {
+    remove(id: string) {
         return `This action removes a #${id} knowledge`;
     }
 }

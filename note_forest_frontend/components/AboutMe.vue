@@ -7,6 +7,7 @@ import {useApiFetchRequest} from "~/composables/useApiFetch";
 const {t} = useI18n()
 
 const githubUsername = 'kanned1079'
+const githubAvatarUrl = `https://ikanned.com:2444/d/Upload/58361983.jpeg`
 
 // 预取数据，SSR + 客户端共享
 // const {data, error} = await useFetch<GithubUserSearchResponse>(
@@ -21,16 +22,15 @@ const { data, error } = await useApiFetchRequest<GithubUserSearchResponse>(
       server: true, // 显式开启 SSR（默认是 false）
       baseURL: undefined, // 👈️ 禁用封装默认的 apiBase（因为这是外部 API）
       auth: false
-
     }
 )
 
-const myUser = ref<GithubUserSearchResponse | null>(data.value ?? {
+const myUser = ref<GithubUserSearchResponse | null>(data ?? {
   total_count: 0,
   incomplete_results: false,
   items: [
     {
-      login: 'kanned1079',
+      login: '',
       avatar_url: '',
       html_url: '',
     }
@@ -54,8 +54,8 @@ onMounted(() => {
       <v-avatar size="60%">
         <v-img
             sizes="100%"
-            v-if="myUser?.items[0].avatar_url"
-            :src="myUser?.items[0].avatar_url">
+            v-if="githubAvatarUrl"
+            :src="githubAvatarUrl">
         </v-img>
         <v-icon v-else>{{ 'mdi-account-box-multiple' }}</v-icon>
       </v-avatar>
@@ -70,7 +70,8 @@ onMounted(() => {
         elevation="0"
     >
       <template v-slot:title>
-        <span class="font-weight-black">{{ myUser?.items[0].login }}</span>
+<!--        <span class="font-weight-black">{{ myUser?.items[0].login }}</span>-->
+        <span class="font-weight-black">{{ 'kanned1079' }}</span>
       </template>
 
       <template v-slot:prepend>
@@ -118,7 +119,7 @@ onMounted(() => {
        <v-btn
            variant="outlined"
            style="margin: 0 16px; width: calc(100% - 32px)"
-           :href="myUser?.items[0].html_url"
+           :href="`https://github.com/kanned1079`"
            rel="noopener"
            target="_blank"
        >

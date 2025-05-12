@@ -5,8 +5,6 @@ import {useTheme} from "vuetify/framework";
 import CommonHeaderLeft from "~/components/CommonHeaderLeft.vue";
 import LatestMoment from "~/components/LatestMoment.vue";
 
-
-
 const theme = useTheme()
 const themeStore = useThemeStore()
 const {t} = useI18n()

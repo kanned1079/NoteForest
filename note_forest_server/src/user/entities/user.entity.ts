@@ -14,8 +14,8 @@ export enum UserRole {
 
 @Entity('n_user')
 export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({ nullable: true })
     username?: string;

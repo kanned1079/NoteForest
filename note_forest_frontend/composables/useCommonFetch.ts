@@ -54,6 +54,7 @@ export async function useCommonFetch<T>(
 
     } catch (err) {
         console.error('Fetch error:', err)
+        console.warn(err?.response?.status, err?.status)
 
         // 有些情况下 Nest 的异常没用统一格式返回
         if (err?.response?.status === 401 || err?.status === 401) {

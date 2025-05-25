@@ -4,6 +4,8 @@ import {useCommonFetch} from "~/composables/useCommonFetch";
 // import type {User} from "~/types/user";
 import type {UniversalApiResponse} from "~/types/res";
 import {da} from "vuetify/locale";
+import str = _default.str;
+import useUserStore from "~/store/userStore";
 
 type FetchDocExtraField = {
     page?: number
@@ -87,4 +89,23 @@ export const fetchAllDocuments = async (
         size: data?.size,
         total: data?.total
     }
+}
+
+export const getDocumentByUuid = async (uuid: string): {
+    code: number,
+    data?: DocumentItem
+} => {
+    const {code, data, error} = await useCommonFetch<DocumentItem>(`/api/v1/knowledge/${uuid}`, {
+        method: 'GET',
+        auth: false,
+    })
+    if (!error && code === 200 && data) {
+        return {
+            code: 200,
+            data: data
+        }
+    } else {
+        return {code: code}
+    }
+
 }

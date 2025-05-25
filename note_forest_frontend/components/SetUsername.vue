@@ -2,11 +2,21 @@
 import { ref } from 'vue'
 import useUserStore from "~/store/userStore";
 
+import {updateUsername} from "~/api/user";
+import useThemeStore from "~/store/themeStore";
+
+const props = defineProps<{
+  closeUpdateUsername: () => void
+}>()
+
+const themeStore = useThemeStore()
 const userStore = useUserStore()
 // 表单验证状态
 const valid = ref(false)
 // 用户名输入
 const username = ref('')
+
+const showAlert = ref<boolean>(false)
 
 // 用户名验证规则
 const usernameRules = [
@@ -24,17 +34,27 @@ const usernameRules = [
 ]
 
 // 提交表单方法
-const submitForm = () => {
+const submitForm = async () => {
   if (valid.value) {
     console.log('设置用户名表单提交', {
       username: username.value
     })
-    // 设置用户名逻辑可在此调用 API
+    let {code} = await updateUsername(username.value)
+    switch (code) {
+      case 200: {
+        themeStore.showMessage('成功', 'success')
+        props.closeUpdateUsername()
+        break
+      }
+    }
+
   }
+
 }
 
 onMounted(() => {
   username.value = userStore.user.username || ''
+  // message('ok', 'warning')
 })
 </script>
 
@@ -76,6 +96,22 @@ onMounted(() => {
       </v-btn>
     </v-card-item>
   </v-card>
+
+  <v-snackbar
+      v-model="showAlert"
+      timeout="3000"
+      location="top"
+      variant="elevated"
+      class="pa-0"
+
+
+  >
+    <v-alert type="warning" variant="tonal">6666</v-alert>
+
+
+
+  </v-snackbar>
+
 </template>
 
 <style scoped lang="less">

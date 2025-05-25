@@ -10,6 +10,8 @@ import {UserLoginDto} from "./dto/auth-user";
 import {NotFoundError} from "rxjs";
 import {JwtService} from '@nestjs/jwt';
 import {ResponseCode} from "../common/constants/response-code.enum";
+import {UpdateUsernameDto} from "./dto/update-username.dto";
+import {UpdateUserPasswordDto} from "./dto/update-user-password.dto";
 
 @Injectable()
 export class UserService {
@@ -93,6 +95,27 @@ export class UserService {
         };
     }
 
+    // updateUserPassword 修改用户密码
+    async updateUserPassword(id: string, updateUserPasswordDto: UpdateUserPasswordDto) {
+        const { previousPassword, newPassword } = updateUserPasswordDto;
+
+        const user = await this.userRepository.findOne({ where: { id } });
+
+        if (!user) {
+            throw new NotFoundException('User not found.');
+        }
+
+        const isOldPasswordCorrect = await bcrypt.compare(previousPassword, user.password);
+        if (!isOldPasswordCorrect) {
+            throw new ConflictException('Previous password is incorrect.');
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+        await this.userRepository.save(user);
+
+        return { message: 'Password updated successfully.' };
+    }
+
     async create(createUserDto: CreateUserDto) {
         const {email, password} = createUserDto;
 
@@ -145,6 +168,23 @@ export class UserService {
     update(id: number, updateUserDto: UpdateUserDto) {
         return `This action updates a #${id} user`;
     }
+
+    async updateUsername(id: string, updateUsernameDto: UpdateUsernameDto) {
+        const user = await this.userRepository.findOne({
+            where: {
+                id,
+            }
+        })
+        if (!user) throw new NotFoundException(`user with uuid:${id} not found`)
+        if (user.username === updateUsernameDto.username) throw new ConflictException('new username must be different from previous')
+        user.username = updateUsernameDto.username.trim()
+        await this.userRepository.save(user)
+        return {
+            username: user.username
+        }
+    }
+
+
 
     remove(id: number) {
         return `This action removes a #${id} user`;

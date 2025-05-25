@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import {ref} from 'vue';
+import {updateUserPasswordById} from "~/api/user";
+import {ca} from "vuetify/locale";
+import useThemeStore from "~/store/themeStore";
 
+const props = defineProps<{
+  closeUpdatePassword: () => void
+}>()
+
+const themeStore = useThemeStore()
 // 表单验证状态
 const valid = ref(false);
 // 旧密码输入
@@ -23,19 +31,39 @@ const newPasswordRules = [
     return '新密码是必填项';
   },
   (value: string) => {
-    if (value.length > 6) return true;
-    return '新密码长度需大于 6 位';
+    if (value.length >= 6) return true;
+    return '新密码长度需大于等于 6 位';
   },
+  (value: string) => {
+  if (value === oldPassword.value) {
+    return '新密码不能与旧密码相同'
+  }
+  }
 ];
 
 // 提交表单方法
-const submitForm = () => {
+const submitForm = async () => {
   if (valid.value) {
     console.log('重置密码表单提交', {
       oldPassword: oldPassword.value,
       newPassword: newPassword.value,
     });
     // 重置密码逻辑可在此调用 API
+    let {code} = await updateUserPasswordById(oldPassword.value, newPassword.value)
+    switch (code) {
+      case 200: {
+        themeStore.showMessage('重置密码完成，在下次重新登录后请使用新密码登录。', 'success')
+        setTimeout(() => props.closeUpdatePassword(), 500)
+        break
+      }
+      case 409: {
+        themeStore.showMessage('新密码不能与原先的密码相同', 'warning')
+        break
+      }
+      default: {
+        themeStore.showMessage('其他错误', 'error')
+      }
+    }
   }
 };
 </script>
@@ -96,10 +124,12 @@ const submitForm = () => {
   width: 400px;
   padding-bottom: 30px;
 }
+
 .title-part {
   text-align: center;
   margin-top: 30px;
   margin-bottom: 16px;
+
   .reset-title {
     font-size: 1.4rem;
   }

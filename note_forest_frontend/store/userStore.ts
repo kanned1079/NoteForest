@@ -38,7 +38,9 @@ const useUserStore = defineStore('userStore', () => {
         user,
         isAuthed,
         clearUserData,
-        logout
+        logout,
+        // messageBody,
+        // showMessage
     }
 }, {
     persist: true

@@ -5,6 +5,8 @@ import {UpdateUserDto} from './dto/update-user.dto';
 import {UserLoginDto} from "./dto/auth-user";
 import {AdminGuard} from "../auth/admin.guard";
 import {JwtGuard} from "../auth/jwt/jwt.guard";
+import {UpdateUsernameDto} from "./dto/update-username.dto";
+import {UpdateUserPasswordDto} from "./dto/update-user-password.dto";
 
 @Controller({
     path: '/user',
@@ -36,6 +38,18 @@ export class UserController {
     @UseGuards(JwtGuard)
     update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(+id, updateUserDto);
+    }
+
+    @Patch('/username/update/:id')
+    @UseGuards(JwtGuard)
+    updateUsername(@Param('id') id: string, @Body() updateUsernameDto: UpdateUsernameDto) {
+        return this.userService.updateUsername(id, updateUsernameDto)
+    }
+
+    @Patch('/password/update/:id')
+    @UseGuards(JwtGuard)
+    updateUserPasswordById(@Param('id') id: string, @Body() updateUserPasswordDto: UpdateUserPasswordDto) {
+        return this.userService.updateUserPassword(id, updateUserPasswordDto)
     }
 
     @UseGuards(JwtGuard, AdminGuard)

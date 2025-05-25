@@ -1,4 +1,4 @@
-import {ConflictException, Injectable, Res} from '@nestjs/common';
+import {ConflictException, Injectable, NotFoundException, Res} from '@nestjs/common';
 import {CreateKnowledgeDto} from './dto/create-knowledge.dto';
 import {UpdateKnowledgeDto} from './dto/update-knowledge.dto';
 import {JwtModule} from "@nestjs/jwt"
@@ -121,8 +121,12 @@ export class KnowledgeService {
         };
     }
 
-    findOne(id: string) {
-        return `This action returns a #${id} knowledge`;
+    async findOne(id: string) {
+        const doc = await this.knowledgeRepository.findOne({
+            where: {id}
+        })
+        if (!doc) throw new NotFoundException(`uuid:${id} not found`)
+        return doc
     }
 
     update(id: string, updateKnowledgeDto: UpdateKnowledgeDto) {

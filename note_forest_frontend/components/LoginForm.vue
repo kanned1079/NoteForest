@@ -2,12 +2,16 @@
 import {ref} from 'vue'
 import {processUserAuth} from "~/api/user";
 import {useI18n} from "vue-i18n";
+import {useTheme} from "vuetify";
+import useThemeStore from "~/store/themeStore";
 
 const {locale, t} = useI18n()
 
 const props = defineProps<{
   closeLoginCard: () => void
 }>()
+
+const themeStore = useThemeStore()
 
 // 表单验证状态
 const valid = ref(false)
@@ -52,25 +56,22 @@ const submitForm = async () => {
   if (!showRegisterDialog.value) {
     if (valid.value) {
       const {code} = await processUserAuth(email.value, password.value, 'login')
-      if (code !== 404) showLoginRes.value = true
+      // if (code !== 404) showLoginRes.value = true
       loginCode.value = code
 
       switch (code) {
         case 200:
-          loginTipColor.value = 'success'
-          loginTipText.value = t('login.loginSuccess')
+          themeStore.showMessage(t('login.loginSuccess'), 'success')
           props.closeLoginCard()
           break
         case 400:
-          loginTipColor.value = 'default'
-          loginTipText.value = t('login.formInvalid')
+          themeStore.showMessage(t('login.formInvalid'), 'default')
           break
         case 404:
           showRegisterDialog.value = true
           break
         case 401:
-          loginTipColor.value = 'error'
-          loginTipText.value = t('login.passwordError')
+          themeStore.showMessage(t('login.passwordError'), 'error')
           break
       }
     }
@@ -83,6 +84,7 @@ const submitForm = async () => {
       case 200:
         loginTipColor.value = 'success'
         loginTipText.value = t('login.registerSuccess')
+
         props.closeLoginCard()
         break
       case 400:

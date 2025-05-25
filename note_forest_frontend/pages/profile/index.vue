@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {updateUsername} from "~/api/user";
+
 definePageMeta({
   layout: 'empty',
   pageTransition: {
@@ -11,7 +13,9 @@ import LoginForm from "~/components/LoginForm.vue";
 import {useI18n} from "vue-i18n"
 
 import {useRouter} from "#vue-router";
+import useThemeStore from "~/store/themeStore";
 
+const themeStore = useThemeStore()
 const {locale} = useI18n()
 const router = useRouter()
 
@@ -20,6 +24,9 @@ const { t } = useI18n();
 
 let showSetUsernameDialog = ref<boolean>(false)
 let showResetPwdDialog = ref<boolean>(false)
+
+const closeUpdateUsername = () => showSetUsernameDialog.value = false
+const closeUpdatePassword = () => showResetPwdDialog.value = false
 
 const usernameClick = () => {
   console.log('aaa');
@@ -30,6 +37,10 @@ const changePwdClick = () => {
   console.log('bbb');
   showResetPwdDialog.value = true
 };
+
+const handleClickUpdateUsername = () => {
+  let {code} = updateUsername()
+}
 
 onMounted(() => {
   if (userStore.isAuthed && userStore.user.id) {
@@ -72,8 +83,6 @@ onMounted(() => {
             <p class="field-hint">{{ t('profile.userId') }}</p>
           </div>
           <!-- 用户名 字段 -->
-
-
           <div class="field-item">
             <div class="field-content">
               <p class="field-title">
@@ -104,7 +113,7 @@ onMounted(() => {
           v-model="showSetUsernameDialog"
           width="auto"
       >
-        <SetUsername />
+        <SetUsername :close-update-username="closeUpdateUsername" />
       </v-dialog>
     </div>
 
@@ -113,7 +122,7 @@ onMounted(() => {
           v-model="showResetPwdDialog"
           width="auto"
       >
-        <ResetPassword />
+        <ResetPassword :close-update-password="closeUpdatePassword" />
       </v-dialog>
     </div>
 

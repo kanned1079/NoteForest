@@ -36,15 +36,15 @@ if (error) {
   router.back()
 }
 
-const documentData = ref<DocumentItem | null>(data)
+const documentData = ref<DocumentItem | null>(data || null)
 
 type CommentItem = {
   id: string
   email: string
   username?: string
   content: string
-  created_at: Date
-  updated_at: Date
+  created_at: string
+  updated_at: string
 }
 
 const commentList = ref<CommentItem[]>([
@@ -115,17 +115,17 @@ onMounted(() => {
 
       <MdPreview
           :id="id"
-          :modelValue="documentData.content"
-          :theme="themeStore.isDarkModeEnabled?'dark':''"
+          :modelValue="documentData?.content"
+          :theme="themeStore.isDarkModeEnabled?'dark':undefined"
           :preview-theme="'github'"
       />
     </div>
 
     <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-end; margin-top: 60px; font-size: 0.8rem">
-      <div style="opacity: 0.7;" class="mr-4">{{ documentData.id }}</div>
-      <p :style="documentData.created_at !== documentData.updated_at?{textDecoration: 'line-through'}:null" style="opacity: 0.5;">{{ new Date(documentData.created_at).toLocaleString() }}</p>
-      <v-icon v-if="documentData.created_at !== documentData.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">mdi-arrow-right-thin</v-icon>
-      <p v-if="documentData.created_at !== documentData.updated_at" style="opacity: 0.6;">{{ new Date(documentData.updated_at).toLocaleString() }} 更新</p>
+      <div style="opacity: 0.7;" class="mr-4">{{ documentData?.id }}</div>
+      <p :style="documentData?.created_at !== documentData?.updated_at?{textDecoration: 'line-through'}:null" style="opacity: 0.5;">{{ new Date(documentData?.created_at || '').toLocaleString() }}</p>
+      <v-icon v-if="documentData?.created_at !== documentData?.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">mdi-arrow-right-thin</v-icon>
+      <p v-if="documentData?.created_at !== documentData?.updated_at" style="opacity: 0.6;">{{ new Date(documentData?.updated_at || '').toLocaleString() }} 更新</p>
     </div>
 
     <v-divider style="margin: 10px 0 60px 0" />

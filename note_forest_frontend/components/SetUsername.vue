@@ -72,7 +72,7 @@ onMounted(() => {
             <v-text-field
                 variant="outlined"
                 v-model="username"
-                :rules="usernameRules"
+                :rule="usernameRules"
                 label="用户名"
                 required
                 clearable

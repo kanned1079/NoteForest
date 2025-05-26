@@ -20,7 +20,7 @@ const email = ref('')
 // 密码输入
 const password = ref('')
 
-const loginCode = ref<200 | 400 | 401 | 404 | 409>(200)
+const loginCode = ref<number>(200)
 const showLoginRes = ref<boolean>(false)
 
 // 邮箱验证规则

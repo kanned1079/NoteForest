@@ -30,15 +30,19 @@ export class KnowledgeService {
 
         if (existingKnowledge) {
             if (existingKnowledge.deleted_at === null) {
-                return {
-                    code: ResponseCode.Conflict,
-                    message: `this document of the title [${title}] has already existed.`
-                }
+                // return {
+                //     code: ResponseCode.Conflict,
+                //     message: `this document of the title [${title}] has already existed.`
+                // }
+                throw new ConflictException(`this document of the title [${title}] has already existed.`)
             }
         }
 
         await this.knowledgeRepository.save(this.knowledgeRepository.create({
-            ...createKnowledgeDto
+            title,
+            subtitle,
+            category,
+            content,
         }))
 
         return {

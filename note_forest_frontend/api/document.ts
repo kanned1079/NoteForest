@@ -4,8 +4,8 @@ import {useCommonFetch} from "~/composables/useCommonFetch";
 // import type {User} from "~/types/user";
 import type {UniversalApiResponse} from "~/types/res";
 import {da} from "vuetify/locale";
-import str = _default.str;
 import useUserStore from "~/store/userStore";
+import type {User} from "~/types/user";
 
 type FetchDocExtraField = {
     page?: number
@@ -14,26 +14,45 @@ type FetchDocExtraField = {
     search?:string
 }
 
+type AddDocResp = {
+    code: number
+    message?: string | null
+}
 
-export const commitNewDocument = async (doc: DocumentItem): { code: number } => {
-    const {data, error} = await useCommonFetch<{ data: UniversalApiResponse<any> }>('/api/v1/knowledge', {
+
+export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: number }> => {
+    // const {data, error} = await useCommonFetch<{ data: UniversalApiResponse<any> }>('/api/v1/knowledge', {
+    //     method: 'POST',
+    //     auth: true,
+    //     body: {
+    //         ...doc
+    //     }
+    // })
+    // console.log('-----', data)
+    // if (!error) {
+    //     if (data.data) {
+    //         let _data: UniversalApiResponse<any> = data?.data
+    //         if (_data.code === 200) {
+    //             console.log(_data)
+    //         }
+    //         return {code: _data.code}
+    //     }
+    // } else {
+    //     return {code: 500}
+    // }
+
+    // const userStore = useUserStore()
+    const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge`, {
         method: 'POST',
         auth: true,
         body: {
             ...doc
         }
     })
-    console.log('-----', data)
-    if (!error) {
-        if (data.data) {
-            let _data: UniversalApiResponse<any> = data?.data
-            if (_data.code === 200) {
-                console.log(_data)
-            }
-            return {code: _data.code}
-        }
+    if (!error && code === 200 && data) {
+        return {code: 200}
     } else {
-        return {code: 500}
+        return {code: code}
     }
 }
 

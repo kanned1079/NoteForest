@@ -28,6 +28,9 @@ export class Knowledge {
     @Column({default: false})
     show: boolean;
 
+    @Column({nullable: true})
+    image_url?: string
+
     @CreateDateColumn({ type: 'timestamp' })
     created_at?: Date;
 

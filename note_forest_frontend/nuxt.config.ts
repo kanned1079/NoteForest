@@ -2,7 +2,7 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-11-01',
-    devtools: { enabled: true },
+    // devtools: { enabled: true },
     build: {
         transpile: ['vuetify'],
     },
@@ -37,6 +37,16 @@ export default defineNuxtConfig({
         }
     },
     app: {
+        head: {
+            title: 'Note Forest',
+            link: [
+                {
+                    rel: 'icon',
+                    type: 'image/png',
+                    href: '/note_forest_icon.png'
+                }
+            ]
+        },
         layoutTransition: {
             name: 'fade',
             mode: 'out-in'
@@ -44,7 +54,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            apiBase: 'http://localhost:8081'
+            apiBase: 'https://ikanned.com:14000'
         }
     },
     css: ['~/assets/css/transitions.css']

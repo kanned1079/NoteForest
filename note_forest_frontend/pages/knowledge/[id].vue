@@ -8,6 +8,7 @@ import 'md-editor-v3/lib/preview.css';
 import {MdPreview, MdCatalog} from 'md-editor-v3';
 import useThemeStore from "~/store/themeStore";
 import useUserStore from "~/store/userStore";
+import {useI18n} from "vue-i18n";
 
 
 definePageMeta({
@@ -16,6 +17,8 @@ definePageMeta({
     name: 'layout-fade'
   }
 })
+
+const {t} = useI18n()
 
 const userStore = useUserStore()
 const themeStore = useThemeStore()
@@ -109,10 +112,26 @@ onMounted(() => {
 <template>
 
   <div class="root">
+
+    <v-card
+      variant="flat"
+      height="200"
+      class="mt-8 mb-8"
+      v-if="documentData.image_url"
+
+    >
+      <v-parallax
+          :src="documentData.image_url"
+          scale="1"
+      >
+      </v-parallax>
+    </v-card>
+
     <div class="doc">
       <!--      <p class="doc-title">{{ documentData.title }}</p>-->
       <!--      <p class="doc-subtitle">{{ documentData.subtitle }}</p>-->
 
+<!--      <MdCatalog :editorId="id"  />-->
       <MdPreview
           :id="id"
           :modelValue="documentData?.content"
@@ -125,13 +144,26 @@ onMounted(() => {
       <div style="opacity: 0.7;" class="mr-4">{{ documentData?.id }}</div>
       <p :style="documentData?.created_at !== documentData?.updated_at?{textDecoration: 'line-through'}:null" style="opacity: 0.5;">{{ new Date(documentData?.created_at || '').toLocaleString() }}</p>
       <v-icon v-if="documentData?.created_at !== documentData?.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">mdi-arrow-right-thin</v-icon>
-      <p v-if="documentData?.created_at !== documentData?.updated_at" style="opacity: 0.6;">{{ new Date(documentData?.updated_at || '').toLocaleString() }} 更新</p>
+      <p v-if="documentData?.created_at !== documentData?.updated_at" style="opacity: 0.6;">{{ new Date(documentData?.updated_at || '').toLocaleString() }} {{ t('docList.updated') }}</p>
     </div>
 
+<!--    <v-parallax-->
+<!--        src="https://cdn.vuetifyjs.com/images/backgrounds/vbanner.jpg"-->
+<!--    >-->
+<!--      <div class="d-flex flex-column fill-height justify-center align-center text-white">-->
+<!--        <h1 class="text-h4 font-weight-thin mb-4">-->
+<!--          Vuetify-->
+<!--        </h1>-->
+<!--        <h4 class="subheading">-->
+<!--          Build your application today!-->
+<!--        </h4>-->
+<!--      </div>-->
+<!--    </v-parallax>-->
+
     <v-divider style="margin: 10px 0 60px 0" />
-    <div class="comment">
+    <div class="comment" v-if="false">
       <p class="comment-title">留言</p>
-      <p class="comment-count">共 {{ 55 }} 条留言 （按照时间排序）</p>
+      <p class="comment-count">共 {{ 99 }} 条留言 （按照时间排序）</p>
 
       <v-card
           variant="text"
@@ -187,6 +219,15 @@ onMounted(() => {
 
       </v-card>
     </div>
+
+
+    <v-alert
+        text="因为一些原因，评论区暂时不可见。 / 因為一些原因，評論區暫時不可見。 / 何らかの理由により、コメント欄は一時的に利用できません。 / 어떤 이유에서인지, 댓글 섹션을 일시적으로 이용할 수 없습니다. / For some reason, the comments section is temporarily unavailable. / Pour une raison quelconque, la section commentaires est temporairement indisponible. / Jostain syystä kommenttiosio on tilapäisesti poissa käytöstä. / Бо баъзе сабабҳо, бахши шарҳҳо муваққатан дастрас нест."
+        type="warning"
+        variant="outlined"
+        :icon="false"
+    ></v-alert>
+
   </div>
 
   <!--  <MdCatalog :editorId="id" :scrollElement="scrollElement" />-->
@@ -255,6 +296,7 @@ onMounted(() => {
   --md-bk-color: rgba(0, 0, 0, 0.0) !important;
   --md-border-color: #989898 !important;
 }
+
 
 
 </style>

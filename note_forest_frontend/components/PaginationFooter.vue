@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { watch } from 'vue'
+import {useI18n} from "vue-i18n";
 
 interface Props {
   page: number
@@ -13,6 +14,7 @@ interface Emits {
   (e: 'update'): void
 }
 
+const {t} = useI18n()
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
@@ -20,7 +22,7 @@ const getSelectSize = computed<{ title: string, value: number }[]>(() => {
   let sizeDataRaw: number[] = [5, 10, 20, 50, 100, 200]
   let displayColumn: { title: string, value: number }[] = []
   sizeDataRaw.forEach((nums: number) => displayColumn.push({
-    title: `${nums} 条数据 / 页`,
+    title: `${nums} ${t('docList.itemsPerPage')}`,
     value: nums
   }))
   return displayColumn
@@ -49,7 +51,7 @@ const onSizeChange = (val: number) => {
 
 <template>
   <div class="d-flex justify-space-between w-100 align-center">
-    <div class="ml-3 text-caption">每页显示条目：{{ size }}</div>
+    <div class="ml-3 text-caption">{{ t('docList.itemsPerPageLabel') }} {{ size }}</div>
     <div class="d-flex flex-row align-center mr-1">
       <v-menu>
         <template v-slot:activator="{ props }">
@@ -60,7 +62,7 @@ const onSizeChange = (val: number) => {
               style="opacity: 0.8; margin-right: 16px"
           >
             <v-icon size="small">mdi-format-list-numbered</v-icon>
-            <span class="ml-1">显示条目数</span>
+            <span class="ml-1">{{ t('docList.showItems') }}</span>
           </v-btn>
         </template>
         <v-list class="pa-1" density="compact">

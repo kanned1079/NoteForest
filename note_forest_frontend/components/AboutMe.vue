@@ -15,17 +15,29 @@ const githubAvatarUrl = `https://ikanned.com:2444/d/Upload/58361983.jpeg`
 //       method: 'GET'
 //     }
 // )
-const { data, error } = await useApiFetchRequest<GithubUserSearchResponse>(
-    `https://api.github.com/search/users?q=${githubUsername}`,
-    {
-      method: 'GET',
-      server: true, // 显式开启 SSR（默认是 false）
-      baseURL: undefined, // 👈️ 禁用封装默认的 apiBase（因为这是外部 API）
-      auth: false
-    }
-)
+// const { data, error } = await useApiFetchRequest<GithubUserSearchResponse>(
+//     `https://api.github.com/search/users?q=${githubUsername}`,
+//     {
+//       method: 'GET',
+//       server: true, // 显式开启 SSR（默认是 false）
+//       baseURL: undefined, // 👈️ 禁用封装默认的 apiBase（因为这是外部 API）
+//       auth: false
+//     }
+// )
 
-const myUser = ref<GithubUserSearchResponse | null>(data ?? {
+// const myUser = ref<GithubUserSearchResponse | null>(data ?? {
+//   total_count: 0,
+//   incomplete_results: false,
+//   items: [
+//     {
+//       login: '',
+//       avatar_url: '',
+//       html_url: '',
+//     }
+//   ]
+// })
+
+const myUser = ref<GithubUserSearchResponse | null>({
   total_count: 0,
   incomplete_results: false,
   items: [
@@ -47,7 +59,7 @@ onMounted(() => {
 <template>
   <div class="root">
     <div class="title-part-root">
-      <h2>关于</h2>
+      <h2>{{ t('aboutMe.title') }}</h2>
     </div>
 
     <div class="avatar-root">

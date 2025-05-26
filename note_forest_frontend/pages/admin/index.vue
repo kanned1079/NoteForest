@@ -33,12 +33,14 @@ const desserts = ref([
 
 <template>
 <div class="root">
+  <p style="font-size: 2rem">Nothing here...</p>
   <v-card
       variant="flat"
       :border="0"
       :subtitle="'站点的基本信息，包含主要的统计数据。'"
       hover
       class="pa-1"
+      v-if="false"
   >
     <template v-slot:title>
       统计信息

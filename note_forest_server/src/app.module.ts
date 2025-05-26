@@ -7,7 +7,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { KnowledgeModule } from './knowledge/knowledge.module';
-import { CommentModule } from './comment/comment.module';
 
 
 @Module({
@@ -36,7 +35,6 @@ import { CommentModule } from './comment/comment.module';
         UserModule,
         AuthModule,
         KnowledgeModule,
-        CommentModule,
     ],
     controllers: [AppController],
     providers: [AppService],

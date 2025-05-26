@@ -16,4 +16,8 @@ export class CreateKnowledgeDto {
     @IsOptional()
     content: string
 
+    @IsString()
+    @IsOptional()
+    image_url: string
+
 }

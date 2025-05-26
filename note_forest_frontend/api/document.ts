@@ -20,28 +20,7 @@ type AddDocResp = {
 }
 
 
-export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: number }> => {
-    // const {data, error} = await useCommonFetch<{ data: UniversalApiResponse<any> }>('/api/v1/knowledge', {
-    //     method: 'POST',
-    //     auth: true,
-    //     body: {
-    //         ...doc
-    //     }
-    // })
-    // console.log('-----', data)
-    // if (!error) {
-    //     if (data.data) {
-    //         let _data: UniversalApiResponse<any> = data?.data
-    //         if (_data.code === 200) {
-    //             console.log(_data)
-    //         }
-    //         return {code: _data.code}
-    //     }
-    // } else {
-    //     return {code: 500}
-    // }
-
-    // const userStore = useUserStore()
+export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: number, err?: string }> => {
     const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge`, {
         method: 'POST',
         auth: true,
@@ -52,7 +31,34 @@ export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: numb
     if (!error && code === 200 && data) {
         return {code: 200}
     } else {
-        return {code: code}
+        return {code: code, err: error}
+    }
+}
+
+export const updateDocumentByUuid = async (id: string, doc: DocumentItem): Promise<{code: number, err?: string}> => {
+    const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge/${id}`, {
+        method: 'PATCH',
+        auth: true,
+        body: {
+            ...doc
+        }
+    })
+    if (!error && code === 200 && data) {
+        return {code: 200}
+    } else {
+        return {code: code, err: error}
+    }
+}
+
+export const deleteDocumentByUuid = async (id: string): Promise<{code: number, err?: string}> => {
+    const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge/${id}`, {
+        method: 'DELETE',
+        auth: true,
+    })
+    if (!error && code === 200 && data) {
+        return {code: 200}
+    } else {
+        return {code: code, err: error}
     }
 }
 
@@ -126,5 +132,4 @@ export const getDocumentByUuid = async (uuid: string): {
     } else {
         return {code: code}
     }
-
 }

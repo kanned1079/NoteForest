@@ -57,6 +57,7 @@ const langClick = (langCode: 'cn' | 'en') => {
           :value="item.text"
           @click="langClick(item.code)"
           rounded
+          class="custom-list-item ml-2 mr-2"
       >
         <v-list-item-title>{{ item.text }}</v-list-item-title>
       </v-list-item>
@@ -76,5 +77,12 @@ const langClick = (langCode: 'cn' | 'en') => {
 <style lang="less" scoped>
 .root {
   margin-right: 14px;
+}
+
+.custom-list-item {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  min-height: 28px !important;
+  font-size: 1rem;
 }
 </style>

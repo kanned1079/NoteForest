@@ -14,10 +14,12 @@ import 'md-editor-v3/lib/style.css';
 import {config as mdEditorConfig} from "md-editor-v3"
 import userStore from "~/store/userStore";
 import {useI18n} from "vue-i18n";
-import {commitNewDocument} from "~/api/document";
+import {commitNewDocument, getDocumentByUuid, updateDocumentByUuid} from "~/api/document";
 import type {DocumentItem} from "~/types/doc";
+import {useRoute} from "vue-router";
 
 const {t, locale} = useI18n()
+const route = useRoute()
 const router = useRouter()
 const themeStore = useThemeStore()
 
@@ -196,6 +198,7 @@ const docData = ref<DocumentItem>({
   subtitle: '',
   category: '',
   content: '',
+  image_url: '',
 })
 
 const showMeta = ref<boolean>(false)
@@ -206,23 +209,63 @@ const state = reactive({
 
 const showCancelConfirmDialog = ref<boolean>(false)
 
+const editType = ref<'create' | 'edit'>('create')
+
 const commitDocClick = async () => {
-  if (docData.value.title) {
-    console.log('commit doc')
-    const {code} = await commitNewDocument(docData.value)
-    console.log('commit doc code: ', code)
+  if (!docData.value.title) {
+    themeStore.showMessage(t('docEdit.titleRequired'), 'error')
+    return
+  }
+
+  console.log('commit doc')
+
+  if (editType.value === 'create') {
+    const { code, err } = await commitNewDocument(docData.value)
+
     if (code === 200) {
-      themeStore.showMessage('文章已保存', 'success')
+      themeStore.showMessage(t('docEdit.saveSuccess'), 'success')
       setTimeout(() => router.back(), 500)
     } else if (code === 409) {
-      console.log('doc exists')
-      themeStore.showMessage('文章已存在', 'error')
+      themeStore.showMessage(t('docEdit.docExist'), 'warning')
+    } else {
+      themeStore.showMessage(`${t('docEdit.saveError')}${err}`, 'error')
     }
-    console.log('new: ', code)
+
+  } else if (editType.value === 'edit') {
+    const { code, err } = await updateDocumentByUuid(docData.value.id, docData.value)
+    console.log('修改code', code)
+
+    if (code === 200) {
+      themeStore.showMessage(t('docEdit.saveSuccess'), 'success')
+      setTimeout(() => router.back(), 500)
+    } else if (code === 400) {
+      themeStore.showMessage(t('docEdit.dataIncomplete'), 'warning')
+    } else if (code === 404) {
+      themeStore.showMessage(t('docEdit.docNotFound'), 'error')
+    } else {
+      themeStore.showMessage(`${t('docEdit.saveError')}${err}`, 'warning')
+    }
+
   } else {
-    themeStore.showMessage('请输入文章标题', 'error')
+    themeStore.showMessage(t('docEdit.unknownEditType'), 'error')
   }
 }
+
+onBeforeMount(async () => {
+  console.log(route.params.id)
+  if (route.params.id) {
+    if (route.params.id === 'new') {
+      // 新建
+      editType.value = 'create'
+    } else {
+      let {code, data} = await getDocumentByUuid(route.params.id)
+      if (code === 200 && data) {
+        docData.value = data
+        editType.value = 'edit'
+      }
+    }
+  }
+})
 
 onMounted(() => {
   docData.value.title = locale.value==='cn'?'未命名文档':'Untitled document'
@@ -235,7 +278,7 @@ onMounted(() => {
     <v-card
         variant="outlined"
         :border="0"
-        :subtitle="`编辑下面的表单来编写文档，推荐将标题设置为您文档的一级标题。点击右侧的按钮来编辑文章的Meta信息。`"
+        :subtitle="t('docEdit.metaEditTip')"
         :title="docData.title"
         class=""
     >
@@ -246,8 +289,8 @@ onMounted(() => {
           @click="showMeta=true"
         >
           <template v-slot:prepend><v-icon>mdi-book-information-variant</v-icon></template>
-
-          编辑Meta</v-btn>
+          {{ t('docEdit.editMeta') }}
+        </v-btn>
       </template>
 
       <v-card-item>
@@ -291,15 +334,15 @@ onMounted(() => {
             @click="commitDocClick"
         >
           <template v-slot:prepend><v-icon>mdi-content-save</v-icon></template>
-          提交</v-btn>
+          {{ editType === 'create' ? t('docEdit.commit') : t('docEdit.confirmEdit') }}</v-btn>
 
         <v-btn
             variant="tonal"
             @click="showCancelConfirmDialog=true"
         >
           <template v-slot:prepend><v-icon>mdi-close-box-multiple</v-icon></template>
-
-          取消</v-btn>
+          {{ t('docEdit.cancel') }}
+          </v-btn>
       </v-card-actions>
 
     </v-card>
@@ -310,20 +353,20 @@ onMounted(() => {
     >
 
       <template v-slot:default>
-        <v-card rounded="lg" title="确认取消吗">
+        <v-card rounded="lg" :title="t('docEdit.cancelConfirm')" density="comfortable">
           <v-card-text>
-            一旦您取消，您编辑的所有内容都将不会被保存。
+            {{ t('docEdit.cancelTip') }}
           </v-card-text>
 
           <v-card-actions class="mb-1">
             <v-spacer></v-spacer>
             <v-btn
                 variant="plain"
-                text="我再想想"
+                :text="t('docEdit.thinkAgain')"
                 @click="showCancelConfirmDialog=false;"
             ></v-btn>
             <v-btn
-                text="确认"
+                :text="t('docEdit.confirm')"
                 color="error"
                 @click="showCancelConfirmDialog=false; router.back()"
             ></v-btn>
@@ -342,8 +385,8 @@ onMounted(() => {
         class="mx-auto"
         min-width="360"
         width="440"
-        title="编辑Meta"
-        subtitle="设置文章的标题、副标题等基础信息。"
+        :title="t('docEdit.editMeta')"
+        :subtitle="t('docEdit.editMetaTip')"
       >
 
         <template v-slot:prepend>
@@ -362,23 +405,45 @@ onMounted(() => {
             <v-text-field
                 density="compact"
                 variant="outlined"
-                label="文章标题"
+                :label="t('docEdit.title')"
                 v-model="docData.title"
             ></v-text-field>
 
             <v-text-field
                 density="compact"
                 variant="outlined"
-                label="文章副标题"
+                :label="t('docEdit.subtitle')"
                 v-model="docData.subtitle"
             ></v-text-field>
 
             <v-text-field
                 density="compact"
                 variant="outlined"
-                label="分类"
+                :label="t('docEdit.category')"
                 v-model="docData.category"
             ></v-text-field>
+
+            <v-text-field
+                density="compact"
+                variant="outlined"
+                :label="t('docEdit.imageUrl')"
+                v-model="docData.image_url"
+            ></v-text-field>
+
+            <v-card
+                variant="flat"
+                height="200"
+                class="mt-4 mb-4"
+                v-if="docData.image_url"
+
+            >
+              <v-parallax
+                  :src="docData.image_url"
+                  scale="1"
+              >
+              </v-parallax>
+            </v-card>
+
             </div>
         </v-card-item>
 

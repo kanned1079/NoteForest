@@ -4,6 +4,7 @@ import {processUserAuth} from "~/api/user";
 import {useI18n} from "vue-i18n";
 import {useTheme} from "vuetify";
 import useThemeStore from "~/store/themeStore";
+import router from "#app/plugins/router";
 
 const {locale, t} = useI18n()
 
@@ -63,6 +64,8 @@ const submitForm = async () => {
         case 200:
           themeStore.showMessage(t('login.loginSuccess'), 'success')
           props.closeLoginCard()
+          themeStore.toggleMenuDisplay()
+          navigateTo({path: '/profile'})
           break
         case 400:
           themeStore.showMessage(t('login.formInvalid'), 'default')

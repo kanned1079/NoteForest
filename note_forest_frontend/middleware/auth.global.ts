@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
     if (path.endsWith('/profile') && !isAuthed) {
         console.log('you are not authed.')
-        themeStore.showMessage('你可能还没有登录账户', 'warning')
+        themeStore.showMessage('PLEASE LOGIN FIRST', 'warning')
 
         // return navigateTo(`/${to.path.split('/')[1]}/`)
         return false

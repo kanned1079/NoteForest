@@ -16,60 +16,67 @@ const {t} = useI18n()
   <v-responsive>
     <v-app>
 
-      <v-navigation-drawer
-          :width="300"
-          v-model="themeStore.isMenuDisplay"
-          temporary
-      >
-        <div class="drawer-root">
-          <CommonAside/>
-        </div>
-      </v-navigation-drawer>
 
-      <v-app-bar
-          :elevation="0"
-          :height="56"
-          style="background-color: rgba(0,0,0,0.0); backdrop-filter: blur(10px)"
-      >
-        <template v-slot:prepend>
-          <CommonHeaderLeft/>
-        </template>
+<!--        <v-parallax src="https://ikanned.com:2444/d/Upload/pexels-martin-p%C3%A9chy-5335217.jpg">-->
 
-        <template v-slot:append>
-          <CommonHeaderRight/>
-        </template>
-      </v-app-bar>
+          <v-navigation-drawer
+              :width="300"
+              v-model="themeStore.isMenuDisplay"
+              temporary
+          >
+            <div class="drawer-root">
+              <CommonAside/>
+            </div>
+          </v-navigation-drawer>
 
-      <v-main class="ml-2 mr-2" >
-        <v-container :max-width="1600">
-          <v-row>
-            <!-- 区域 A -->
-            <v-col
-                cols="12"
-                md="4"
-                order="1"
-                order-md="1"
-                style="height: auto;"
-            >
-              <AboutMe />
-            </v-col>
+          <v-app-bar
+              :elevation="0"
+              :height="56"
+              style="background-color: rgba(0,0,0,0.0); backdrop-filter: blur(10px)"
+          >
+            <template v-slot:prepend>
+              <CommonHeaderLeft/>
+            </template>
 
-            <!-- 区域 B -->
-            <v-col
-                cols="12"
-                md="8"
-                order="2"
-                order-md="2"
-                class="pa-2"
-                style="height: auto;"
-            >
-              <div class="scroll-area">
-                <NuxtPage />
-              </div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-main>
+            <template v-slot:append>
+              <CommonHeaderRight/>
+            </template>
+          </v-app-bar>
+
+          <v-main class="ml-2 mr-2" >
+            <v-container :max-width="1600">
+              <v-row>
+                <!-- 区域 A -->
+                <v-col
+                    cols="12"
+                    md="4"
+                    order="1"
+                    order-md="1"
+                    style="height: auto;"
+                >
+                  <AboutMe />
+                </v-col>
+
+                <!-- 区域 B -->
+                <v-col
+                    cols="12"
+                    md="8"
+                    order="2"
+                    order-md="2"
+                    class="pa-2"
+                    style="height: auto;"
+                >
+                  <div class="scroll-area">
+                    <NuxtPage />
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-main>
+<!--        </v-parallax>-->
+
+
+
 
     </v-app>
   </v-responsive>

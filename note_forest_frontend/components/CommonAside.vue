@@ -58,9 +58,9 @@ const items = computed<MenuItem[]>(() => {
 
 const bottomItems = computed<MenuItem[]>(() => {
   let list: MenuItem[] = []
-  if (userStore.isAuthed) list.push({text: '退出账户', icon: 'mdi-exit-to-app', path: 'exit'})
+  if (userStore.isAuthed) list.push({text: 'menu.logout', icon: 'mdi-exit-to-app', path: 'exit'})
   if (userStore.user.role === 'admin' && userStore.isAuthed) {
-    list.unshift({text: '后台管理', icon: 'mdi-folder', path: 'admin'})
+    list.unshift({text: 'menu.admin', icon: 'mdi-folder', path: 'admin'})
   }
   return list
 })
@@ -114,9 +114,9 @@ onMounted(() => {
           <div :style="{backgroundColor: theme.global.current.value.colors.primary}" class="color-desc"/>
         </div>
         <div class="profile-root">
-          <p class="username">{{ userStore.user.username ? userStore.user.username : userStore.isAuthed?'无用户名':'访客' }}</p>
+          <p class="username">{{ userStore.user.username ? userStore.user.username : userStore.isAuthed?t('menu.noUsername'):t('menu.visitor') }}</p>
           <p @click="loginOrRegClick" class="email">{{
-              userStore.user.email ? userStore.user.email : '点击以登录或注册'
+              userStore.user.email ? userStore.user.email : t('menu.clickLogin')
             }}</p>
         </div>
 
@@ -152,7 +152,7 @@ onMounted(() => {
           :key="item.text"
           class="bottom-btn"
           @click="bottomClick(item.path)"
-      >{{ item.text }}
+      >{{ t(item.text) }}
         <template v-slot:prepend>
           <v-icon>{{ item.icon }}</v-icon>
         </template>

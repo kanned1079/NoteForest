@@ -191,11 +191,14 @@ mdEditorConfig({
 }  as ConfigOption);
 
 const docData = ref<DocumentItem>({
+  id: '',
   title: '',
   subtitle: '',
   category: '',
   content: '',
 })
+
+const showMeta = ref<boolean>(false)
 
 const state = reactive({
   previewTheme: 'github'
@@ -204,12 +207,21 @@ const state = reactive({
 const showCancelConfirmDialog = ref<boolean>(false)
 
 const commitDocClick = async () => {
-  console.log('commit doc')
-  const {code} = await commitNewDocument(docData.value)
-  if (code === 200) {
-    router.back()
+  if (docData.value.title) {
+    console.log('commit doc')
+    const {code} = await commitNewDocument(docData.value)
+    console.log('commit doc code: ', code)
+    if (code === 200) {
+      themeStore.showMessage('文章已保存', 'success')
+      setTimeout(() => router.back(), 500)
+    } else if (code === 409) {
+      console.log('doc exists')
+      themeStore.showMessage('文章已存在', 'error')
+    }
+    console.log('new: ', code)
+  } else {
+    themeStore.showMessage('请输入文章标题', 'error')
   }
-  console.log('new: ', code)
 }
 
 onMounted(() => {
@@ -219,40 +231,52 @@ onMounted(() => {
 
 <template>
   <div class="root">
+
     <v-card
         variant="outlined"
         :border="0"
-        subtitle="编辑下面的表单来编写文档，推荐将标题设置为您文档的一级标题。"
+        :subtitle="`编辑下面的表单来编写文档，推荐将标题设置为您文档的一级标题。点击右侧的按钮来编辑文章的Meta信息。`"
         :title="docData.title"
         class=""
     >
+      <template v-slot:append>
+        <v-btn
+          color="primary"
+          variant="tonal"
+          @click="showMeta=true"
+        >
+          <template v-slot:prepend><v-icon>mdi-book-information-variant</v-icon></template>
+
+          编辑Meta</v-btn>
+      </template>
+
       <v-card-item>
         <div class="mt-2">
-          <v-text-field
-              density="compact"
-              variant="outlined"
-              label="文章标题"
-              v-model="docData.title"
-          ></v-text-field>
+<!--          <v-text-field-->
+<!--              density="compact"-->
+<!--              variant="outlined"-->
+<!--              label="文章标题"-->
+<!--              v-model="docData.title"-->
+<!--          ></v-text-field>-->
 
-          <v-text-field
-              density="compact"
-              variant="outlined"
-              label="文章副标题"
-              v-model="docData.subtitle"
-          ></v-text-field>
+<!--          <v-text-field-->
+<!--              density="compact"-->
+<!--              variant="outlined"-->
+<!--              label="文章副标题"-->
+<!--              v-model="docData.subtitle"-->
+<!--          ></v-text-field>-->
 
-          <v-text-field
-              density="compact"
-              variant="outlined"
-              label="分类"
-              v-model="docData.category"
-          ></v-text-field>
+<!--          <v-text-field-->
+<!--              density="compact"-->
+<!--              variant="outlined"-->
+<!--              label="分类"-->
+<!--              v-model="docData.category"-->
+<!--          ></v-text-field>-->
 
           <MdEditor
               v-model="docData.content"
               :language="themeStore.lang"
-              :theme="themeStore.isDarkModeEnabled?'dark':''"
+              :theme="themeStore.isDarkModeEnabled?'dark':undefined"
               :preview-theme="state.previewTheme"
               style="z-index: 100000"
           />
@@ -308,6 +332,61 @@ onMounted(() => {
       </template>
     </v-dialog>
 
+    <v-dialog
+        v-model="showMeta"
+    >
+      <v-card
+        hover
+        variant="flat"
+        density="comfortable"
+        class="mx-auto"
+        min-width="360"
+        width="440"
+        title="编辑Meta"
+        subtitle="设置文章的标题、副标题等基础信息。"
+      >
+
+        <template v-slot:prepend>
+          <v-icon size="large">mdi-book-information-variant</v-icon>
+        </template>
+
+        <template v-slot:append>
+          <v-icon
+              class="close-meta-icon"
+              @click="showMeta = false"
+          >
+            mdi-window-close</v-icon>
+        </template>
+        <v-card-item>
+          <div class="mt-2">
+            <v-text-field
+                density="compact"
+                variant="outlined"
+                label="文章标题"
+                v-model="docData.title"
+            ></v-text-field>
+
+            <v-text-field
+                density="compact"
+                variant="outlined"
+                label="文章副标题"
+                v-model="docData.subtitle"
+            ></v-text-field>
+
+            <v-text-field
+                density="compact"
+                variant="outlined"
+                label="分类"
+                v-model="docData.category"
+            ></v-text-field>
+            </div>
+        </v-card-item>
+
+
+      </v-card>
+
+    </v-dialog>
+
   </div>
 </template>
 
@@ -321,13 +400,23 @@ onMounted(() => {
   border-radius: 4px;
   border: #919191 solid 1px;
   --md-border-active-color: #000 !important;
-  height: calc(100vh - 450px);
+  height: calc(100vh - 140px);
   --md-bk-color: rgba(0,0,0,0.0) !important;
 }
 
 .md-editor-dark {
   --md-bk-color: rgba(0,0,0,0.0) !important;
   --md-border-color: #989898 !important;
+}
+
+.close-meta-icon {
+  opacity: .8;
+  transition: ease-in-out 300ms;
+}
+
+.close-meta-icon:hover {
+  transform: rotate(90deg);
+  opacity: 0.5;
 }
 
 </style>

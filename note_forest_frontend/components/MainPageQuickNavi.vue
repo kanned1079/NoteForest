@@ -47,11 +47,7 @@ const searchTitle = ref<string>('')
 const fetchDocumentsOnClient = async () => {
   let {code, data, error} = await useCommonFetch<GetDocumentsData>(`/api/v1/knowledge?search=${searchTitle.value}&page=${page.value}&size=${size.value}`, {
     method: 'GET',
-    auth: false
-  }, {
-    params: {
-      search: searchTitle.value
-    }
+    auth: false,
   })
   if (code === 200 && data?.documents && !error) {
     knowledgeList.value = []
@@ -76,9 +72,16 @@ const knowledgeItemClick = (uuid: string) => {
 }
 
 onBeforeMount(() => {
-  const sizeFromLocal = localStorage.getItem('size')
-  if (sizeFromLocal) {
-    size.value = JSON.parse(sizeFromLocal) || 10
+  console.log(route.path)
+  if (route.path.endsWith('knowledge')) {
+    size.value = 10
+    isMainPage.value = false
+    const sizeFromLocal = localStorage.getItem('size')
+    if (sizeFromLocal) {
+      size.value = JSON.parse(sizeFromLocal) || 10
+    }
+  } else {
+    isMainPage.value = true
   }
 })
 
@@ -94,13 +97,7 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   fetchDocumentsOnClient()
 
-  console.log(route.path)
-  if (route.path.endsWith('knowledge')) {
-    size.value = 10
-    isMainPage.value = false
-  } else {
-    isMainPage.value = true
-  }
+
 
 })
 
@@ -152,21 +149,23 @@ onBeforeMount(() => {
 
     <v-card
         v-for="i in knowledgeList"
-        variant="flat"
-        class="mt-3 doc-item pt-1 pb-0"
+        variant="outlined"
+        border="1"
+        elevation="0"
+        class="mt-6 doc-item pb-0"
         @click="knowledgeItemClick(i.id)"
     >
-      <v-card-text>
+      <v-card-text style="padding: 10px 16px">
         <p class="font-weight-black" style="font-size: 1.3rem">{{ i.title }}</p>
         <p class="mt-1">{{ i.subtitle.slice(0, 40) }}{{ i.subtitle.length > 40 ? '...' : '' }}</p>
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start">
+        <div v-if="true" style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start">
           <div style="opacity: 0.7;" class="mr-4">{{ i.id }}</div>
           <p :style="i.created_at !== i.updated_at?{textDecoration: 'line-through'}:null" style="opacity: 0.5;">
-            {{ new Date(i.created_at).toLocaleString() }}</p>
+            {{ new Date(i.created_at || '').toLocaleString() }}</p>
           <v-icon v-if="i.created_at !== i.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">
             mdi-arrow-right-thin
           </v-icon>
-          <p v-if="i.created_at !== i.updated_at" style="opacity: 0.6;">{{ new Date(i.updated_at).toLocaleString() }}
+          <p v-if="i.created_at !== i.updated_at" style="opacity: 0.6;">{{ new Date(i.updated_at || '').toLocaleString() }}
             更新</p>
         </div>
       </v-card-text>

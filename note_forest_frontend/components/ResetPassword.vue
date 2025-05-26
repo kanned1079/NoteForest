@@ -92,7 +92,7 @@ const submitForm = async () => {
             <v-text-field
                 variant="outlined"
                 v-model="newPassword"
-                :rules="newPasswordRules"
+                :rule="newPasswordRules"
                 label="新密码"
                 type="password"
                 required

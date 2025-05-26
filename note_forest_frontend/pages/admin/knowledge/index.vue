@@ -31,7 +31,7 @@ const handleKeydown = (e: KeyboardEvent) => {
 
 // 当前记录、编辑状态
 const record = ref<DocumentItem>({
-  id: 0,
+  id: '',
   title: '',
   subtitle: '',
   category: '',
@@ -78,7 +78,7 @@ function edit(item: DocumentItem) {
 }
 
 // 删除（假删）
-function remove(id: number) {
+function remove(id: string) {
   knowledgeArr.value = knowledgeArr.value.filter(item => item.id !== id)
   total.value--
 }
@@ -130,7 +130,7 @@ onBeforeMount(() => {
 // 初始化加载
 onMounted(() => {
   showFetchErr.value = true
-  fetchData()
+  // fetchData()
   window.addEventListener('keydown', handleKeydown)
 })
 
@@ -220,6 +220,10 @@ onUnmounted(() => {
           >
             <template v-slot:item.created_at="{ value }">
               {{ new Date(value).toLocaleDateString() }}
+            </template>
+
+            <template v-slot:item.subtitle="{ value }">
+              {{ value.length > 40 ? value.slice(0, 40) + '...' : value }}
             </template>
 
             <template v-slot:item.actions="{ item }">

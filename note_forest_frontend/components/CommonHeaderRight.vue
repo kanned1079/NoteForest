@@ -8,7 +8,7 @@ const themeStore = useThemeStore()
 
 type LangOption = {
   text: string,
-  code: string
+  code: 'en' | 'cn'
 }
 
 const langList: LangOption[] = [
@@ -27,7 +27,7 @@ const colorSchemeClick = () => {
   theme.global.name.value = themeStore.isDarkModeEnabled?'dark':'light'
 }
 
-const langClick = (langCode: string) => {
+const langClick = (langCode: 'cn' | 'en') => {
   setLocale(langCode)
   themeStore.lang = langCode
 }

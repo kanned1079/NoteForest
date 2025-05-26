@@ -76,7 +76,7 @@ const showLoginCard = ref<boolean>(false)
 const closeLoginCard = () => setTimeout(() => showLoginCard.value = false, 1000)
 
 const loginOrRegClick = () => {
-  if (userStore.user.id <= 0) {
+  if (!userStore.user.id) {
     showLoginCard.value = true
   }
 }

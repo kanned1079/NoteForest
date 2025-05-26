@@ -5,9 +5,9 @@ export type DocumentItem = {
     category: string,
     content: string,
     show?: boolean,
-    created_at?: Date,
-    updated_at?: Date,
-    deleted_at?: Date
+    created_at?: string,
+    updated_at?: string,
+    deleted_at?: string,
 }
 
 export type GetDocumentsData = {

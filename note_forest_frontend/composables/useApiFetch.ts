@@ -30,8 +30,8 @@ export async function useApiFetchRequest<T>(
         }>(url, {
             baseURL: config.public.apiBase,
             credentials: 'include',
-            server: false,
-            throw: false,
+            // server: false,
+            // throw: false,
             headers,
             ...options,
         })

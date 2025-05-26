@@ -11,7 +11,7 @@ import userStore from "~/store/userStore";
 //     user: T
 // }
 
-export const processUserAuth = async (email: string, password: string, type: 'login' | 'register'): { code: number } => {
+export const processUserAuth = async (email: string, password: string, type: 'login' | 'register'): Promise<{ code: number }> => {
     const userStore = useUserStore()
     const {code, data, error} = await useCommonFetch<User>(`/api/v1/user/${type}`, {
         method: 'POST',
@@ -35,7 +35,7 @@ type UpdateUsernameRespData = {
     username: string
 }
 
-export const updateUsername = async (newUsername: string): {code: number} => {
+export const updateUsername = async (newUsername: string): Promise<{code: number}> => {
     const userStore = useUserStore()
     const {code, data, error} = await useCommonFetch<UpdateUsernameRespData>(`/api/v1/user/username/update/${userStore.user.id}`, {
         method: 'PATCH',
@@ -52,7 +52,7 @@ export const updateUsername = async (newUsername: string): {code: number} => {
     }
 }
 
-export const updateUserPasswordById = async (previousPwd: string, newPwd: string): {code: number} => {
+export const updateUserPasswordById = async (previousPwd: string, newPwd: string): Promise<{code: number}> => {
     const userStore = useUserStore()
     const {code, data, error} = await useCommonFetch<UpdateUsernameRespData>(`/api/v1/user/password/update/${userStore.user.id}`, {
         method: 'PATCH',

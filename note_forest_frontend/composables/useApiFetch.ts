@@ -36,6 +36,8 @@ export async function useApiFetchRequest<T>(
             ...options,
         })
 
+        console.log('fetch')
+
         if (options.auth && raw.code === 401) {
             token.value = null
             userStore.logout()

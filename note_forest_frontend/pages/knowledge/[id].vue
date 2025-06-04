@@ -10,7 +10,6 @@ import useThemeStore from "~/store/themeStore";
 import useUserStore from "~/store/userStore";
 import {useI18n} from "vue-i18n";
 
-
 definePageMeta({
   layout: 'empty',
   pageTransition: {
@@ -24,7 +23,13 @@ const userStore = useUserStore()
 const themeStore = useThemeStore()
 const route = useRoute()
 const router = useRouter()
-const docUuid = route.params.id
+const docUuid = route.params.id as string
+
+if (process.server) {
+  console.log('[SSR] loading doc:', docUuid)
+} else {
+  console.log('[Client] loading doc:', docUuid)
+}
 
 const {data, error} = await useApiFetchRequest<DocumentItem>(
     `/api/v1/knowledge/${docUuid}`,
@@ -36,6 +41,7 @@ const {data, error} = await useApiFetchRequest<DocumentItem>(
 )
 
 if (error) {
+  console.error('[SSR Error]', error.value)
   router.back()
 }
 
@@ -50,54 +56,7 @@ type CommentItem = {
   updated_at: string
 }
 
-const commentList = ref<CommentItem[]>([
-  {
-    id: '7ac774bd-f635-4d33-8b67-80da816e5995',
-    email: 'kanned1079@gmail.com',
-    content: 'tim老师，这两年有很多音乐剧中巡，很多国际知名音乐剧演员也来开演唱会，感觉剧圈的热度大了很多，能不能去伦敦或者纽约介绍一下百老汇或者西区的音乐剧，采访一下当地演员，去分享一下现场看音乐剧的感觉，或者介绍一下剧院设施和这个行业的前景，感觉会很有意思',
-    created_at: '2025-05-25T10:30:00Z',
-    updated_at: '2025-05-25T10:35:00Z',
-  },
-  {
-    id: 'c2e3f40a-41d2-45d9-9d87-2b6aafe5b13b',
-    email: 'alice@example.com',
-    username: 'Alice',
-    content: '文介绍 风光人文摄影 接地气的梗 夸张的表现形式 技术派的专场\n' +
-        '你要什么 应有尽有',
-    created_at: '2025-05-25T09:20:00Z',
-    updated_at: '2025-05-25T09:20:00Z',
-  },
-  {
-    id: 'e9731824-b8cc-4f4e-bd99-9462430a4f84',
-    email: 'bob@example.com',
-    username: 'Bob',
-    content: '我一直很好奇，omakese往往都爱强调自己食材新鲜，早上市场挑货/空运什么。可每个客人就给那么一小点，一晚翻台率也有限，这背后的经济学原理是怎么样？例如各种肉买了一大块，一晚只服务了几座，剩下的靠着厨子的精妙的先进先出原则刺身/腌制/熟成什么窍门控制尽量物尽其用，实在不行了剩下的扔掉？客人虽然每一件都没吃到多少，但他们本身也为了菜品的多样性而承担了这部分的成本？',
-    created_at: '2025-05-24T18:45:00Z',
-    updated_at: '2025-05-24T19:00:00Z',
-  },
-  {
-    id: 'a91313f1-3aa9-4e54-926d-e6db4c7b7d79',
-    email: 'charlie@domain.com',
-    content: '中国古代好像没有冠夫姓这制度吧，好像也是从西方来的，像民国开始出现了把名字前加上夫姓。还好新中国成立了，不然的话也可能像日本那样',
-    created_at: '2025-05-23T15:00:00Z',
-    updated_at: '2025-05-23T15:00:00Z',
-  },
-  {
-    id: 'df3e0c22-9d6a-4cf1-ae4b-c5c3d1196de7',
-    email: 'daniel@sample.net',
-    username: 'Daniel',
-    content: 'Nice work! I’ll be looking forward to your next article.',
-    created_at: '2025-05-22T13:35:00Z',
-    updated_at: '2025-05-22T14:10:00Z',
-  },
-  {
-    id: '22e4a378-8b0a-4f2b-a5e2-d23dc7802fae',
-    email: 'no_name@ghostmail.com',
-    content: 'Interesting perspective. I hadn’t thought of it that way.',
-    created_at: '2025-05-21T11:10:00Z',
-    updated_at: '2025-05-21T11:15:00Z',
-  },
-])
+const commentList = ref<CommentItem[]>([])
 
 const id = 'preview-only';
 const text = ref('# Hello Editor');
@@ -161,6 +120,16 @@ onMounted(() => {
 <!--    </v-parallax>-->
 
     <v-divider style="margin: 10px 0 60px 0" />
+
+
+    <v-alert
+        text="因为一些原因，评论区暂时不可见。 / 因為一些原因，評論區暫時不可見。 / 何らかの理由により、コメント欄は一時的に利用できません。 / 어떤 이유에서인지, 댓글 섹션을 일시적으로 이용할 수 없습니다. / For some reason, the comments section is temporarily unavailable. / Pour une raison quelconque, la section commentaires est temporairement indisponible. / Jostain syystä kommenttiosio on tilapäisesti poissa käytöstä. / Бо баъзе сабабҳо, бахши шарҳҳо муваққатан дастрас нест."
+        type="warning"
+        variant="outlined"
+        :icon="false"
+        class="mb-10"
+    ></v-alert>
+
     <div class="comment" v-if="false">
       <p class="comment-title">留言</p>
       <p class="comment-count">共 {{ 99 }} 条留言 （按照时间排序）</p>
@@ -221,12 +190,7 @@ onMounted(() => {
     </div>
 
 
-    <v-alert
-        text="因为一些原因，评论区暂时不可见。 / 因為一些原因，評論區暫時不可見。 / 何らかの理由により、コメント欄は一時的に利用できません。 / 어떤 이유에서인지, 댓글 섹션을 일시적으로 이용할 수 없습니다. / For some reason, the comments section is temporarily unavailable. / Pour une raison quelconque, la section commentaires est temporairement indisponible. / Jostain syystä kommenttiosio on tilapäisesti poissa käytöstä. / Бо баъзе сабабҳо, бахши шарҳҳо муваққатан дастрас нест."
-        type="warning"
-        variant="outlined"
-        :icon="false"
-    ></v-alert>
+
 
   </div>
 

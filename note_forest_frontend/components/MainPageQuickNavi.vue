@@ -53,8 +53,8 @@ const page = ref<number>(1)
 const size = ref<number>(10)
 const total = ref<number>(0)
 
-const knowledgeItemClick = (uuid: string) => {
-  navigateTo({ path: `/knowledge/${uuid}` })
+const knowledgeItemClick = (id: string) => {
+  navigateTo({ path: `/${locale.value}/knowledge/${id}` })
 }
 
 onBeforeMount(() => {

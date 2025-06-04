@@ -4,7 +4,6 @@ import {processUserAuth} from "~/api/user";
 import {useI18n} from "vue-i18n";
 import {useTheme} from "vuetify";
 import useThemeStore from "~/store/themeStore";
-import router from "#app/plugins/router";
 
 const {locale, t} = useI18n()
 

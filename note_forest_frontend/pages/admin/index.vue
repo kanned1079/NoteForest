@@ -40,14 +40,15 @@ const desserts = ref([
       :subtitle="'站点的基本信息，包含主要的统计数据。'"
       hover
       class="pa-1"
-      v-if="false"
+      v-if="true"
   >
     <template v-slot:title>
-      统计信息
+      <p class="card-title">统计信息</p>
     </template>
 
   <template v-slot:item>
     <v-table
+        v-if="false"
         density="comfortable"
         class="mt-2"
     >
@@ -70,4 +71,10 @@ const desserts = ref([
 .root {
 //background-color: #a5a5a5;
 }
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 </style>

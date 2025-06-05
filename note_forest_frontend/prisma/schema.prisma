@@ -1,0 +1,45 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql" // 或 "postgresql"、"sqlite" 等
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  username   String?   @db.VarChar(255)
+  email      String    @unique
+  role       UserRole  @default(USER)
+  password   String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamp(0) // Prisma 没有内置软删除机制，可手动管理
+
+  @@map("n_user_dev") // 映射到数据库中实际的表名
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  title      String
+  subtitle   String?   @db.VarChar(255)
+  category   String?   @db.VarChar(255)
+  content    String    @db.LongText
+  show       Boolean   @default(false)
+  image_url  String?   @db.VarChar(255)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime? @db.Timestamp(0)
+
+  @@map("n_document_dev")
+  @@index([title])
+}

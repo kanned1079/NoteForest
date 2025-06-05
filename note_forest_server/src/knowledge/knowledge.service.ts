@@ -52,44 +52,6 @@ export class KnowledgeService {
         }
     }
 
-    // async findAll(fetchKnowledgeDto: FetchKnowledgeDto) {
-    //     const { page = 1, size = 10, search = '' } = fetchKnowledgeDto;
-    //     const skip = (page - 1) * size;
-    //
-    //     const queryBuilder: SelectQueryBuilder<Knowledge> = this.knowledgeRepository.createQueryBuilder('knowledge');
-    //
-    //     if (fetchKnowledgeDto.list) {
-    //         queryBuilder.select([
-    //             'knowledge.id',
-    //             'knowledge.title',
-    //             'knowledge.subtitle',
-    //             'knowledge.category',
-    //             'knowledge.created_at',
-    //             'knowledge.updated_at',
-    //         ]);
-    //     }
-    //
-    //     if (search) {
-    //         queryBuilder.where('knowledge.title LIKE :search', { search: `%${search}%` });
-    //     }
-    //
-    //     const [knowledges, total] = await queryBuilder
-    //         .orderBy('knowledge.created_at', 'DESC') // ✅ 按照创建时间倒序排序
-    //         .skip(skip)
-    //         .take(size)
-    //         .getManyAndCount();
-    //
-    //     return {
-    //         code: ResponseCode.OK,
-    //         message: 'ok',
-    //         data: knowledges,
-    //         total,
-    //         page,
-    //         size,
-    //         search,
-    //     };
-    // }
-
     async findAll(fetchKnowledgeDto: FetchKnowledgeDto) {
         const { page = 1, size = 10, search = '', list } = fetchKnowledgeDto;
         const skip = (page - 1) * size;

@@ -85,7 +85,6 @@ export class UserService {
             if (existingUser.deleted_at === null) {
                 throw new ConflictException('该邮箱已被注册，无法重复注册');
             }
-            // 如果之前被删除，可以恢复或允许重新注册，视业务而定
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

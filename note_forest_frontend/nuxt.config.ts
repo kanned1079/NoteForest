@@ -22,8 +22,9 @@ export default defineNuxtConfig({
         strategy: 'prefix',
         defaultLocale: 'cn',
         locales: [
+            { code: 'cn', name: 'Chinese', file: 'cn.json' },
             { code: 'en', name: 'English', file: 'en.json' },
-            { code: 'cn', name: 'Chinese', file: 'cn.json' }
+            { code: 'ja', name: 'Japanese', file: 'ja.json' },
         ]
     },
     vite: {
@@ -53,9 +54,11 @@ export default defineNuxtConfig({
         }
     },
     runtimeConfig: {
-        public: {
-            apiBase: 'https://ikanned.com:14000'
-        }
+        // public: {
+        //     apiBase: 'https://ikanned.com:14000'
+        // },
+        jwtSecret: process.env.JWT_SECRET,
+        jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     },
     css: ['~/assets/css/transitions.css']
 })

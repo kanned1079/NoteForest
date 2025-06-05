@@ -13,14 +13,20 @@
     "@mdi/font": "^7.4.47",
     "@nuxtjs/i18n": "^9.5.4",
     "@pinia/nuxt": "^0.11.0",
+    "@prisma/client": "^6.9.0",
+    "bcrypt": "^6.0.0",
+    "ioredis": "^5.6.1",
+    "jsonwebtoken": "^9.0.2",
     "less": "^4.3.0",
     "less-loader": "^12.3.0",
     "md-editor-v3": "^5.5.0",
     "nuxt": "^3.17.1",
     "pinia": "^3.0.2",
     "pinia-plugin-persistedstate": "^4.2.0",
+    "prisma": "^6.9.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "zod": "^3.25.51"
   },
   "devDependencies": {
     "vite-plugin-vuetify": "^2.1.1",

@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to) => {
     const themeStore = useThemeStore()
 
     const isAuthed = userStore.isAuthed && userStore.user.id
-    const isAdmin = userStore.user?.role === 'admin'
+    const isAdmin = userStore.user?.role === 'ADMIN'
 
     const path = to.path
 

@@ -221,7 +221,7 @@ onUnmounted(() => {
               :items-per-page="size"
               class="mt-0"
               item-value="id"
-              no-data-text="{{ t('docList.noData') }}"
+              :no-data-text="t('docList.noData')"
               density="comfortable"
               hide-default-footer
               striped

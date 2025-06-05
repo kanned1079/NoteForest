@@ -2,7 +2,7 @@ export type User = {
     id: string,
     username?: string | null,
     email: string,
-    role: 'admin' | 'user',
+    role: 'ADMIN' | 'USER',
     token?: '',
     created_at?: Date,
     updated_at?: Date,

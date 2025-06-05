@@ -8,13 +8,17 @@ const themeStore = useThemeStore()
 
 type LangOption = {
   text: string,
-  code: 'en' | 'cn'
+  code: 'en' | 'cn' | 'ja'
 }
 
 const langList: LangOption[] = [
   {
     text: 'English',
     code: 'en',
+  },
+  {
+    text: '日本語',
+    code: 'ja',
   },
   {
     text: '中文简体',
@@ -27,7 +31,7 @@ const colorSchemeClick = () => {
   theme.global.name.value = themeStore.isDarkModeEnabled?'dark':'light'
 }
 
-const langClick = (langCode: 'cn' | 'en') => {
+const langClick = (langCode: 'cn' | 'en' | 'ja') => {
   setLocale(langCode)
   themeStore.lang = langCode
 }

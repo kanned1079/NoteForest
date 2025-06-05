@@ -40,7 +40,7 @@ const desserts = ref([
       :subtitle="'站点的基本信息，包含主要的统计数据。'"
       hover
       class="pa-1"
-      v-if="true"
+      v-if="false"
   >
     <template v-slot:title>
       <p class="card-title">统计信息</p>

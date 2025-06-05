@@ -21,7 +21,7 @@ type MenuItem = {
 }
 
 const items = computed<MenuItem[]>(() => {
-  return !(userStore.isAuthed && userStore.user.role==='admin')?[
+  return !(userStore.isAuthed && userStore.user.role==='ADMIN')?[
     {
       text: 'menu.home',
       icon: 'mdi-home',
@@ -59,7 +59,7 @@ const items = computed<MenuItem[]>(() => {
 const bottomItems = computed<MenuItem[]>(() => {
   let list: MenuItem[] = []
   if (userStore.isAuthed) list.push({text: 'menu.logout', icon: 'mdi-exit-to-app', path: 'exit'})
-  if (userStore.user.role === 'admin' && userStore.isAuthed) {
+  if (userStore.user.role === 'ADMIN' && userStore.isAuthed) {
     list.unshift({text: 'menu.admin', icon: 'mdi-folder', path: 'admin'})
   }
   return list

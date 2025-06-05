@@ -9,6 +9,7 @@ import {MdPreview, MdCatalog} from 'md-editor-v3';
 import useThemeStore from "~/store/themeStore";
 import useUserStore from "~/store/userStore";
 import {useI18n} from "vue-i18n";
+import SsrTest from "~/components/SsrTest.vue";
 
 definePageMeta({
   layout: 'empty',
@@ -31,19 +32,26 @@ if (process.server) {
   console.log('[Client] loading doc:', docUuid)
 }
 
-const {data, error} = await useApiFetchRequest<DocumentItem>(
-    `/api/v1/knowledge/${docUuid}`,
-    {
-      method: 'GET',
-      server: true, // 显式开启 SSR（默认是 false）
-      auth: false
-    }
-)
+// const {data, error} = await useApiFetchRequest<DocumentItem>(
+//     `/api/v1/knowledge/${docUuid}`,
+//     {
+//       method: 'GET',
+//       server: true, // 显式开启 SSR（默认是 false）
+//       auth: false
+//     }
+// )
 
-if (error) {
-  console.error('[SSR Error]', error.value)
+const data = await $fetch<DocumentItem>(`/api/v2/document/${docUuid}`)
+
+if (!data) {
+  // console.error('[SSR Error]', error.value)
   router.back()
 }
+//
+// if (error) {
+//   console.error('[SSR Error]', error.value)
+//   router.back()
+// }
 
 const documentData = ref<DocumentItem | null>(data || null)
 
@@ -62,13 +70,24 @@ const id = 'preview-only';
 const text = ref('# Hello Editor');
 // const scrollElement = document.documentElement;
 
+
+
 onMounted(() => {
   console.log(docUuid)
+
+  if (!data) {
+    router.back()
+  }
+
+
+
 })
 
 </script>
 
 <template>
+
+<!--  <SsrTest />-->
 
   <div class="root">
 

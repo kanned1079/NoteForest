@@ -35,16 +35,26 @@ const handleKeydown = (e: KeyboardEvent) => {
 const searchTitle = ref<string>('')
 
 const fetchDocumentsOnClient = async () => {
-  const { code, data, error } = await useCommonFetch<GetDocumentsData>(
-      `/api/v1/knowledge?search=${searchTitle.value}&page=${page.value}&size=${size.value}`,
-      { method: 'GET', auth: false }
-  )
-  if (code === 200 && data?.documents && !error) {
+  // const { code, data, error } = await useCommonFetch<GetDocumentsData>(
+  //     `/api/v1/knowledge?search=${searchTitle.value}&page=${page.value}&size=${size.value}`,
+  //     { method: 'GET', auth: false }
+  // )
+
+  try {
+    const data = await $fetch<GetDocumentsData>(`/api/v2/document?search=${searchTitle.value}&page=${page.value}&size=${size.value}`)
+    console.log(data.documents)
     knowledgeList.value = data.documents
     total.value = data.total || 0
-  } else {
+  } catch (err: any) {
     console.log(t('docList.fetchError')) // 使用现有翻译键
   }
+
+  // if (code === 200 && data?.documents && !error) {
+  //   knowledgeList.value = data.documents
+  //   total.value = data.total || 0
+  // } else {
+  //   console.log(t('docList.fetchError')) // 使用现有翻译键
+  // }
 }
 
 const knowledgeList = ref<DocumentItem[]>([])

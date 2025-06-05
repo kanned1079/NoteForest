@@ -377,14 +377,13 @@ onMounted(() => {
 
     <v-dialog
         v-model="showMeta"
+        class="v-dialog"
     >
       <v-card
         hover
         variant="flat"
         density="comfortable"
         class="mx-auto"
-        min-width="360"
-        width="440"
         :title="t('docEdit.editMeta')"
         :subtitle="t('docEdit.editMetaTip')"
       >
@@ -482,6 +481,61 @@ onMounted(() => {
 .close-meta-icon:hover {
   transform: rotate(90deg);
   opacity: 0.5;
+}
+
+
+.v-dialog {
+  /* 让对话框最大宽度不超过90vw，最小宽度为320px，自动居中 */
+  max-width: 90vw !important;
+  min-width: 320px !important;
+  margin: 0 auto;
+}
+
+.v-card.mx-auto {
+  width: 100% !important;
+  max-width: 440px;
+  box-sizing: border-box;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.close-meta-icon {
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--v-theme-on-surface);
+  transition: color 0.3s ease;
+}
+.close-meta-icon:hover {
+  color: var(--v-theme-error);
+}
+
+.v-card-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 图片展示卡片高度自适应，最大高度限制 */
+.v-card[variant="flat"][height="200"] {
+  height: auto !important;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* v-parallax 宽度满卡片宽度，高度自动 */
+.v-parallax {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 8px;
+}
+
+/* 小屏幕调整 */
+@media (max-width: 480px) {
+  .v-card.mx-auto {
+    max-width: 95vw;
+    padding: 12px;
+  }
 }
 
 </style>

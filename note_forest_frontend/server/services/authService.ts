@@ -2,10 +2,11 @@ import jwt from 'jsonwebtoken'
 import {useRuntimeConfig} from '#imports'
 import {User} from '@prisma/client'
 
-export const generateToken = (user: User) => {
+export const generateToken = (user: User): string => {
 
     console.log('generate Token')
     const config = useRuntimeConfig()
+    console.log("jwtSecret: ", config.jwtSecret)
     return jwt.sign(
         {
             id: user.id,
@@ -13,12 +14,14 @@ export const generateToken = (user: User) => {
             role: user.role,
         },
         config.jwtSecret,
-        { expiresIn: config.jwtExpiresIn }
+        {
+            algorithm: 'HS256',
+            expiresIn: config.jwtExpiresIn
+        }
     )
 }
 
 export const verifyToken = (token: string): {id: string, role: string} | null => {
-
 
     console.log('call verifyToken')
     const config = useRuntimeConfig()

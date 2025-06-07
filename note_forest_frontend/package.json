@@ -30,6 +30,7 @@
     "zod": "^3.25.51"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "vite-plugin-vuetify": "^2.1.1",
     "vuetify": "^3.8.3"
   }

@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     ],
     i18n: {
         strategy: 'prefix',
-        defaultLocale: 'zh-Ïcn',
+        defaultLocale: 'zh-cn',
         locales: [
             { code: 'zh-cn', name: 'Chinese', file: 'cn.json' },
             { code: 'en-us', name: 'English', file: 'en.json' },
@@ -57,9 +57,6 @@ export default defineNuxtConfig({
         }
     },
     runtimeConfig: {
-        // public: {
-        //     apiBase: 'https://ikanned.com:14000'
-        // },
         jwtSecret: process.env.JWT_SECRET,
         jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
     },

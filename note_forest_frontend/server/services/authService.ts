@@ -4,21 +4,23 @@ import {User} from '@prisma/client'
 
 export const generateToken = (user: User): string => {
 
-    console.log('generate Token')
+    console.log('generate Token for ' + user.email)
     const config = useRuntimeConfig()
-    console.log("jwtSecret: ", config.jwtSecret)
-    console.log("jwtExpiresIn: ", config.jwtExpiresIn)
-    console.log("from env: ", process.env.JWT_SECRET)
+    // console.log("jwtSecret: ", config.jwtSecret)
+    // console.log("jwtExpiresIn: ", config.jwtExpiresIn)
+    // console.log("from env: ", process.env.JWT_SECRET)
     return jwt.sign(
         {
             id: user.id,
             email: user.email,
             role: user.role,
         },
-        config.jwtSecret,
+        // config.jwtSecret,
+        process.env.JWT_SECRET as string,
         {
             algorithm: 'HS256',
-            expiresIn: config.jwtExpiresIn
+            // expiresIn: config.jwtExpiresIn
+            expiresIn: process.env.JWT_EXPIRES_IN as string
         }
     )
 }

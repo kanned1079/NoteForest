@@ -7,6 +7,8 @@ export const generateToken = (user: User): string => {
     console.log('generate Token')
     const config = useRuntimeConfig()
     console.log("jwtSecret: ", config.jwtSecret)
+    console.log("jwtExpiresIn: ", config.jwtExpiresIn)
+    console.log("from env: ", process.env.JWT_SECRET)
     return jwt.sign(
         {
             id: user.id,

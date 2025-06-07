@@ -53,10 +53,16 @@ const headers = [
 const searchContent = ref<string>('')
 
 const fetchData = async () => {
+  console.log(searchContent.value)
+
   dataIsLoading.value = true
   const res = await fetchAllDocuments(page.value, size.value, searchContent.value || '', false)
   if (res.code === 200 && Array.isArray(res.data)) {
-    knowledgeArr.value = res.data
+    if (res.data.length > 0) {
+      knowledgeArr.value = res.data
+    } else {
+      themeStore.showMessage(t('docList.searchResultNoData'), 'warning')
+    }
     total.value = res.total || 0
     setTimeout(() => dataIsLoading.value = false, 300)
   } else {
@@ -166,6 +172,7 @@ onUnmounted(() => {
           <v-btn
               color="primary"
               variant="flat"
+              style="text-transform: none !important;"
               @click="navigateTo({ path: `/${locale}/admin/knowledge/new` })"
           >
             <template v-slot:prepend>
@@ -178,7 +185,7 @@ onUnmounted(() => {
               variant="tonal"
               class="ml-3"
               @click="showSearchDialog=true"
-              style="text-transform: none"
+              style="text-transform: none !important;"
           >
             <template v-slot:prepend>
               <v-icon>mdi-file-search-outline</v-icon>
@@ -195,7 +202,7 @@ onUnmounted(() => {
               color="default"
               variant="tonal"
               class="ml-3"
-              style="opacity: 0.7"
+              style="opacity: 0.7; text-transform: none !important;"
               @click="resetSearch"
           >
             <template v-slot:prepend>
@@ -258,7 +265,7 @@ onUnmounted(() => {
                     variant="outlined"
                     v-bind="props"
                     size="small"
-                    style="opacity: 0.8; margin-right: 16px"
+                    style="opacity: 0.8; margin-right: 16px; text-transform: none !important;"
                 >
                   <v-icon size="small">mdi-format-list-numbered</v-icon>
                   <p style="margin-left: 6px">{{ t('docList.showItems') }}</p>
@@ -317,11 +324,13 @@ onUnmounted(() => {
                 variant="plain"
                 :text="t('docEdit.thinkAgain')"
                 @click="showDeleteDialog = false;"
+                style="text-transform: none !important;"
             ></v-btn>
             <v-btn
                 :text="t('docEdit.confirm')"
                 color="error"
                 @click="runRemove"
+                style="text-transform: none !important;"
             ></v-btn>
           </v-card-actions>
         </v-card>

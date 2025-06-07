@@ -23,11 +23,11 @@ export default defineNuxtConfig({
     ],
     i18n: {
         strategy: 'prefix',
-        defaultLocale: 'cn',
+        defaultLocale: 'zh-Ïcn',
         locales: [
-            { code: 'cn', name: 'Chinese', file: 'cn.json' },
-            { code: 'en', name: 'English', file: 'en.json' },
-            { code: 'ja', name: 'Japanese', file: 'ja.json' },
+            { code: 'zh-cn', name: 'Chinese', file: 'cn.json' },
+            { code: 'en-us', name: 'English', file: 'en.json' },
+            { code: 'ja-jp', name: 'Japanese', file: 'ja.json' },
         ]
     },
     vite: {

@@ -11,7 +11,7 @@ type FetchDocExtraField = {
     page?: number
     size?: number
     total: number
-    search?:string
+    search?: string
 }
 
 type AddDocResp = {
@@ -48,7 +48,7 @@ export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: numb
                 ...doc,
             }
         })
-        return {code: data?200:500}
+        return {code: data ? 200 : 500}
     } catch (err: any) {
         if (err?.statusCode) {
             return {code: err?.statusCode}
@@ -60,7 +60,7 @@ export const commitNewDocument = async (doc: DocumentItem): Promise<{ code: numb
 
 }
 
-export const updateDocumentByUuid = async (id: string, doc: DocumentItem): Promise<{code: number, err?: string}> => {
+export const updateDocumentByUuid = async (id: string, doc: DocumentItem): Promise<{ code: number, err?: string }> => {
     // const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge/${id}`, {
     //     method: 'PATCH',
     //     auth: true,
@@ -76,7 +76,7 @@ export const updateDocumentByUuid = async (id: string, doc: DocumentItem): Promi
 
     try {
         const token = useCookie('token')
-        const data = await $fetch<{code: number, message: string}>(`/api/v2/document/${id}`, {
+        const data = await $fetch<{ code: number, message: string }>(`/api/v2/document/${id}`, {
             method: "PUT",
             headers: {
                 Authorization: `Bearer ${token.value}`
@@ -85,15 +85,15 @@ export const updateDocumentByUuid = async (id: string, doc: DocumentItem): Promi
                 ...doc
             }
         })
-        return {code: data?200:500}
-    }catch (err: any) {
+        return {code: data ? 200 : 500}
+    } catch (err: any) {
         if (err?.statusCode) {
             return {code: err?.statusCode, err: new Error('failure')}
         }
     }
 }
 
-export const deleteDocumentByUuid = async (id: string): Promise<{code: number, err?: string}> => {
+export const deleteDocumentByUuid = async (id: string): Promise<{ code: number, err?: string }> => {
     // const {code, data, error} = await useCommonFetch<AddDocResp>(`/api/v1/knowledge/${id}`, {
     //     method: 'DELETE',
     //     auth: true,
@@ -105,14 +105,14 @@ export const deleteDocumentByUuid = async (id: string): Promise<{code: number, e
     // }
     try {
         const token = useCookie('token')
-        const data = await $fetch<{code: number, message?: string}>(`/api/v2/document/${id}`, {
+        const data = await $fetch<{ code: number, message?: string }>(`/api/v2/document/${id}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${token.value}`
             },
         })
-        return {code: data?200:500}
-    }catch (err: any) {
+        return {code: data ? 200 : 500}
+    } catch (err: any) {
         if (err?.statusCode) {
             return {code: err?.statusCode, err: new Error('failure')}
         }
@@ -136,27 +136,26 @@ export const fetchAllDocuments = async (
 
     try {
         const data = await $fetch<{
-                documents?: DocumentItem[]
-                page?: number
-                size?: number
-                total?: number
-                search?: string
+            documents?: DocumentItem[]
+            page?: number
+            size?: number
+            total?: number
+            search?: string
         }>(`/api/v2/document`, {
             method: "GET",
-            params: {
-                    params: as_list
-                        ? {
-                            page,
-                            size,
-                            search,
-                            list: true
-                        }
-                        : {
-                            page,
-                            size,
-                            search
-                        }
-            }
+            params: as_list
+                ? {
+                    page,
+                    size,
+                    search,
+                    list: true
+                }
+                : {
+                    page,
+                    size,
+                    search
+                }
+
         })
         return {
             code: 200,
@@ -240,7 +239,7 @@ export const getDocumentByUuid = async (uuid: string): {
             code: 200,
             data: data
         }
-    }catch (err: any) {
+    } catch (err: any) {
         if (err?.statusCode) {
             return {code: err?.statusCode}
         }

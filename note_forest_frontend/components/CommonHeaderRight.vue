@@ -6,23 +6,25 @@ const {locales, setLocale} = useI18n()
 const theme = useTheme()
 const themeStore = useThemeStore()
 
+type LangCode = 'en-us' | 'zh-cn' | 'ja-jp'
+
 type LangOption = {
   text: string,
-  code: 'en' | 'cn' | 'ja'
+  code: LangCode
 }
 
 const langList: LangOption[] = [
   {
     text: 'English',
-    code: 'en',
+    code: 'en-us',
   },
   {
     text: '日本語',
-    code: 'ja',
+    code: 'ja-jp',
   },
   {
     text: '中文简体',
-    code: 'cn'
+    code: 'zh-cn'
   }
 ]
 
@@ -31,7 +33,7 @@ const colorSchemeClick = () => {
   theme.global.name.value = themeStore.isDarkModeEnabled?'dark':'light'
 }
 
-const langClick = (langCode: 'cn' | 'en' | 'ja') => {
+const langClick = (langCode: LangCode) => {
   setLocale(langCode)
   themeStore.lang = langCode
 }

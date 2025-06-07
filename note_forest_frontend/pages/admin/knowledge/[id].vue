@@ -287,6 +287,7 @@ onMounted(() => {
           color="primary"
           variant="tonal"
           @click="showMeta=true"
+          style="text-transform: none !important;"
         >
           <template v-slot:prepend><v-icon>mdi-book-information-variant</v-icon></template>
           {{ t('docEdit.editMeta') }}

@@ -92,6 +92,7 @@
     "deleteConfirm": "确认删除吗",
     "deleteTip": "再次确认你需要删除的文章信息如下，删除方式为软删除，如果你想恢复文章需要手动操作数据库进行恢复。",
     "searchTitle": "搜寻",
+    "searchResultNoData": "没有找到匹配要求的文章",
     "searchSubtitle": "输入你要搜寻的文章标题，支持模糊查询。",
     "searchLabel": "标题（点击或按下Enter来搜寻）",
     "searchEmptyError": "搜索内容不可以为空",
@@ -123,5 +124,21 @@
     "confirmReset": "确认重置",
     "resetSuccess": "重置密码完成，在下次重新登录后请使用新密码登录。",
     "resetError": "重置密码失败，请检查输入或稍后重试"
+  },
+  "adminPage": {
+    "title": "统计信息",
+    "subtitle": "站点的基本信息，包含主要的统计数据。",
+    "statistic": {
+      "all": "总文章计数（包含活跃与已经删除的项目）",
+      "active": "活跃文章（显示在列表中的所有项目）",
+      "deleted": "已经删除的文章计数",
+      "users": "用户计数（不含注销的账户）"
+    },
+    "fetchErr": "获取统计数据失败，请稍后再试。"
+  },
+  "readDoc": {
+    "enterFullScreen": "全屏阅读",
+    "exitFullScreen": "退出全屏",
+    "back": "返回"
   }
 }

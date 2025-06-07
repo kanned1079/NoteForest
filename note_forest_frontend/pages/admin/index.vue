@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useI18n} from "vue-i18n";
+import useThemeStore from "~/store/themeStore";
 
 definePageMeta({
   layout: 'empty',
@@ -8,68 +9,144 @@ definePageMeta({
   }
 })
 
-const {locale} = useI18n()
+const themeStore = useThemeStore()
+const {locale, t} = useI18n()
 
-const desserts = ref([
+
+type StatisticResponse = {
+  users: number,
+  documents: {
+    total: number,
+    deleted: number,
+    active: number
+  }
+}
+
+type ShowStatisticPageDataItem = {
+  name: string,
+  data: number,
+  icon: string
+}
+
+const statisticData = ref<StatisticResponse>({
+  users: 0,
+  documents: {
+    total: 0,
+    deleted: 0,
+    active: 0
+  }
+})
+
+const showData = computed<ShowStatisticPageDataItem[]>(() => [
   {
-    name: '总文章数',
-    calories: 159,
+    name: 'all',
+    data: statisticData.value.documents.total,
+    icon: 'book'
   },
   {
-    name: '总推文数',
-    calories: 237,
+    name: 'active',
+    data: statisticData.value.documents.active,
+    icon: 'book-check-outline'
   },
   {
-    name: '总通知数',
-    calories: 262,
+    name: 'deleted',
+    data: statisticData.value.documents.deleted,
+    icon: 'book-off-outline'
   },
   {
-    name: '总注册数',
-    calories: 305,
+    name: 'users',
+    data: statisticData.value.users,
+    icon: 'account-check-outline'
   },
 ])
+
+const showData2 = ref<ShowStatisticPageDataItem[]>([
+  {
+    name: 'all',
+    data: statisticData.value.documents.total,
+  },
+  {
+    name: 'active',
+    data: statisticData.value.documents.active,
+  },
+  {
+    name: 'deleted',
+    data: statisticData.value.documents.deleted,
+  },
+  {
+    name: 'users',
+    data: statisticData.value.users,
+  },
+])
+
+const getStatistic = async () => {
+  try {
+    const token = useCookie('token')
+    const data = await $fetch<StatisticResponse>(`/api/v2/statistic`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token.value}`
+      }
+    })
+    console.log(data)
+    if (data) {
+      statisticData.value = data
+    } else themeStore.showMessage(t('adminPage.fetchErr'), 'warning')
+  } catch (err: any) {
+    if (err?.statusCode) {
+      themeStore.showMessage(t('adminPage.fetchErr'), 'warning')
+    }
+  }
+}
+
+onMounted(() => {
+  getStatistic()
+})
 
 </script>
 
 <template>
-<div class="root">
-  <p style="font-size: 2rem">Nothing here...</p>
-  <v-card
-      variant="flat"
-      :border="0"
-      :subtitle="'站点的基本信息，包含主要的统计数据。'"
-      hover
-      class="pa-1"
-      v-if="false"
-  >
-    <template v-slot:title>
-      <p class="card-title">统计信息</p>
-    </template>
-
-  <template v-slot:item>
-    <v-table
-        v-if="false"
-        density="comfortable"
-        class="mt-2"
+  <div class="root">
+    <!--  <p style="font-size: 2rem">Nothing here...</p>-->
+    <v-card
+        variant="outlined"
+        :border="0"
+        :subtitle="t('adminPage.subtitle')"
+        class="pa-1"
+        v-if="true"
     >
-      <tbody>
-      <tr
-          v-for="item in desserts"
-          :key="item.name"
-      >
-        <td class="pl-0">{{ item.name }}</td>
-        <td>{{ item.calories }}</td>
-      </tr>
-      </tbody>
-    </v-table>
-  </template>
-  </v-card>
-</div>
+      <template v-slot:title>
+        <p class="card-title">{{ t('adminPage.title') }}</p>
+      </template>
+
+      <template v-slot:item>
+        <v-card
+            variant="outlined"
+            :border="0"
+            v-for="i in showData"
+            class="mt-6"
+        >
+          <v-card-title>
+            <div style="display: flex; flex-direction: row; align-items: center">
+              <v-icon :size="20">{{ `mdi-${i.icon}` }}</v-icon>
+              <p style="font-size: 1.4rem; font-weight: bold; margin-left: 8px">{{ i.data }}</p>
+            </div>
+          </v-card-title>
+
+          <v-card-subtitle>
+            {{ t(`adminPage.statistic.${i.name}`) }}
+          </v-card-subtitle>
+
+
+        </v-card>
+      </template>
+    </v-card>
+  </div>
 </template>
 
 <style scoped lang="less">
 .root {
-//background-color: #a5a5a5;
+  //background-color: #a5a5a5;
 }
 
 .card-title {

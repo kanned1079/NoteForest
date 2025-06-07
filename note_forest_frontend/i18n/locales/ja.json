@@ -3,7 +3,7 @@
   "menu": {
     "home": "ホーム",
     "title": "メニュー",
-    "user": "ユーザーポータル",
+    "user": "ユーザー",
     "knowledge": "知識ベース",
     "moment": "つぶやき",
     "notice": "通知",
@@ -39,9 +39,9 @@
     "createdAt": "アカウントを作成した時間です。"
   },
   "login": {
-    "loginTitle": "あなたのアカウントにログイン",
+    "loginTitle": "ログイン",
     "registerTitle": "新しいアカウントを確認",
-    "appName": "Note Forest",
+    "appName": "お客様の NoteForest アカウントを使用",
     "emailLabel": "メールアドレス",
     "passwordLabel": "パスワードを入力",
     "emailRequired": "メールアドレスは必須項目です",
@@ -92,6 +92,7 @@
     "deleteConfirm": "本当に削除しますか",
     "deleteTip": "削除する記事の情報を再度確認してください。削除方法はソフト削除です。記事を復元する場合は、手動でデータベースを操作する必要があります。",
     "searchTitle": "検索",
+    "searchResultNoData": "検索条件に一致する記事が見つかりませんでした",
     "searchSubtitle": "検索する記事のタイトルを入力してください。曖昧検索に対応しています。",
     "searchLabel": "タイトル（検索するにはクリックまたはEnterキーを押してください）",
     "searchEmptyError": "検索内容を入力してください",
@@ -123,5 +124,21 @@
     "confirmReset": "リセットを確認",
     "resetSuccess": "パスワードのリセットが完了しました。次回ログインする際には新しいパスワードを使用してください。",
     "resetError": "パスワードのリセットに失敗しました。入力内容を確認するか、後で再試行してください"
+  },
+  "adminPage": {
+    "title": "統計情報",
+    "subtitle": "サイトの基本情報と主要な統計データを含みます。",
+    "statistic": {
+      "all": "総ドキュメント数（有効および削除済みの項目を含む）",
+      "active": "有効なドキュメント（一覧に表示されるすべての項目）",
+      "deleted": "削除されたドキュメントの数",
+      "users": "ユーザー数（退会済みアカウントを除く）"
+    },
+    "fetchErr": "統計情報の取得に失敗しました。しばらくしてから再試行してください。"
+  },
+  "readDoc": {
+    "enterFullScreen": "全画面で読む",
+    "exitFullScreen": "全画面を終了",
+    "back": "戻る"
   }
 }

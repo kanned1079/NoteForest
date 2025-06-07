@@ -39,6 +39,11 @@ const items = computed<MenuItem[]>(() => {
     },
   ]:[
     {
+      text: 'menu.home',
+      icon: 'mdi-home',
+      path: '/'
+    },
+    {
       text: 'menu.overview',
       icon: 'mdi-view-dashboard-variant',
       path: '/admin'
@@ -49,8 +54,13 @@ const items = computed<MenuItem[]>(() => {
       path: '/profile'
     },
     {
-      text: 'menu.write',
+      text: 'menu.knowledge',
       icon: 'mdi-book',
+      path: '/knowledge'
+    },
+    {
+      text: 'menu.write',
+      icon: 'mdi-book-edit',
       path: '/admin/knowledge'
     },
   ]
@@ -233,6 +243,7 @@ onMounted(() => {
   .bottom-btn {
     margin-top: 6px;
     width: 100%;
+    text-transform: none !important;
   }
 }
 </style>

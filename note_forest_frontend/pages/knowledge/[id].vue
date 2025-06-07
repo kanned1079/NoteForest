@@ -70,6 +70,25 @@ const id = 'preview-only';
 const text = ref('# Hello Editor');
 // const scrollElement = document.documentElement;
 
+function toggleFullscreen(shouldEnter: boolean) {
+  const el = document.documentElement
+
+  if (shouldEnter) {
+    if (!document.fullscreenElement) {
+      if (el.requestFullscreen) el.requestFullscreen()
+      else if ((el as any).webkitRequestFullscreen) (el as any).webkitRequestFullscreen()
+      else if ((el as any).mozRequestFullScreen) (el as any).mozRequestFullScreen()
+      else if ((el as any).msRequestFullscreen) (el as any).msRequestFullscreen()
+    }
+  } else {
+    if (document.fullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen()
+      else if ((document as any).webkitExitFullscreen) (document as any).webkitExitFullscreen()
+      else if ((document as any).mozCancelFullScreen) (document as any).mozCancelFullScreen()
+      else if ((document as any).msExitFullscreen) (document as any).msExitFullscreen()
+    }
+  }
+}
 
 
 onMounted(() => {
@@ -91,6 +110,48 @@ onMounted(() => {
 
   <div class="root">
 
+    <div class="operate-part-root">
+      <div class="operate-l">
+        <v-btn
+            style="opacity: 0.8; text-transform: none !important;"
+            color="primary"
+            variant="text"
+            size="small"
+            @click="router.back()">
+          <template v-slot:prepend>
+            <v-icon>mdi-chevron-left</v-icon>
+          </template>
+          {{ t('readDoc.back') }}
+        </v-btn>
+      </div>
+
+      <div class="operate-r">
+        <v-btn
+            color="primary"
+            variant="outlined"
+            size="small"
+            style="opacity: 0.8; text-transform: none !important;"
+            @click="toggleFullscreen(true)">
+          <template v-slot:append>
+            <v-icon>mdi-fullscreen</v-icon>
+          </template>
+          {{ t('readDoc.enterFullScreen') }}
+        </v-btn>
+        <v-btn
+            style="margin-left: 10px;opacity: 0.8; text-transform: none !important;"
+            color="warning"
+            variant="outlined"
+            size="small"
+            @click="toggleFullscreen(false)">
+          <template v-slot:append>
+            <v-icon>mdi-fullscreen-exit</v-icon>
+          </template>
+          {{ t('readDoc.exitFullScreen') }}
+        </v-btn>
+
+      </div>
+    </div>
+
     <v-card
       variant="flat"
       height="200"
@@ -103,6 +164,7 @@ onMounted(() => {
           scale="1"
       >
       </v-parallax>
+
     </v-card>
 
     <div class="doc">
@@ -280,6 +342,15 @@ onMounted(() => {
   --md-border-color: #989898 !important;
 }
 
+.operate-part-root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+  .operate-l {
 
+  }
+}
 
 </style>

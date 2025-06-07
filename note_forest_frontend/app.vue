@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import useThemeStore from "~/store/themeStore";
 import {useTheme} from "vuetify/framework";
+import {useInitTheme} from "~/composables/useInitTheme";
 
 const themeStore = useThemeStore()
 const sysTheme = useTheme()
@@ -8,18 +9,14 @@ const sysTheme = useTheme()
 
 // let showSnackbar = ref<boolean>(true)
 
-onMounted(() => {
-  // window.$showSnackbar = (msg, color = 'info', duration = 3000, position = 'top') => {
-  //   snackbarRef.value?.show(msg, color, duration, position)
-  // }
-  let prefersDark: boolean = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (prefersDark) {
-    themeStore.isDarkModeEnabled = true
-    sysTheme.global.name.value = themeStore.isDarkModeEnabled?'dark':'light'
-  }
-  // themeStore.showMessage('55543232', 'warning', 100)
+let stop: () => void
 
+onMounted(() => {
+  stop = useInitTheme()
 })
+
+onBeforeUnmount(() => stop?.())
+
 </script>
 
 <template>
@@ -48,6 +45,7 @@ onMounted(() => {
 * {
   margin: 0;
   padding: 0;
+ text-transform: none !important;
 }
 .page-enter-active,
 .page-leave-active {

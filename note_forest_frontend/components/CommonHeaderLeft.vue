@@ -20,5 +20,6 @@ const themeStore = useThemeStore()
 .app-name {
   font-size: 1rem;
   opacity: 0.9;
+  text-transform: capitalize !important;
 }
 </style>

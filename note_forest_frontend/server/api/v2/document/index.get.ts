@@ -16,15 +16,18 @@ export default defineEventHandler(async (event) => {
     const { page, size, search, list } = parsed.data
     const skip = (page - 1) * size
 
+    console.log(page, size, search, list)
+
     const whereClause = search
         ? {
             title: {
-                contains: search,
-                mode: 'insensitive',
+                contains: search.toLowerCase(),
             },
             deleted_at: null,
         }
-        : {deleted_at: null,}
+        : {
+            deleted_at: null,
+        }
 
     const selectClause = list
         ? {
@@ -38,18 +41,20 @@ export default defineEventHandler(async (event) => {
         }
         : undefined
 
-    const [documents, total] = await prisma.document.findMany({
-        where: whereClause,
-        select: selectClause,
-        orderBy: {
-            created_at: 'desc',
-        },
-        skip,
-        take: size,
-    }).then(async (docs) => {
-        const count = await prisma.document.count({ where: whereClause })
-        return [docs, count]
-    })
+    const [documents, total] = await Promise.all([
+        prisma.document.findMany({
+            where: whereClause,
+            select: selectClause,
+            orderBy: {
+                created_at: 'desc',
+            },
+            skip,
+            take: size,
+        }),
+        prisma.document.count({
+            where: whereClause,
+        }),
+    ])
 
     return {
         documents,

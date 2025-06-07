@@ -92,6 +92,7 @@
     "deleteConfirm": "Confirm deletion?",
     "deleteTip": "Please re-confirm the article information to be deleted below. Deletion is a soft delete; if you need to restore an article, you must manually operate the database.",
     "searchTitle": "Search",
+    "searchResultNoData": "No articles matching your search were found",
     "searchSubtitle": "Enter the title of the article you want to search for (supports fuzzy queries).",
     "searchLabel": "Title (click or press Enter to search)",
     "searchEmptyError": "Search content cannot be empty",
@@ -123,5 +124,21 @@
     "confirmReset": "Confirm Reset",
     "resetSuccess": "Password reset completed. Please use the new password for your next login.",
     "resetError": "Password reset failed. Please check your input or try again later."
+  },
+  "adminPage": {
+    "title": "Statistics",
+    "subtitle": "Basic information about the site, including key statistical data.",
+    "statistic": {
+      "all": "Total document count (including both active and deleted items)",
+      "active": "Active documents (all items shown in the list)",
+      "deleted": "Count of deleted documents",
+      "users": "User count (excluding deactivated accounts)"
+    },
+    "fetchErr": "Failed to fetch statistics, please try again later."
+  },
+  "readDoc": {
+    "enterFullScreen": "Enter Fullscreen",
+    "exitFullScreen": "Exit Fullscreen",
+    "back": "Back"
   }
 }

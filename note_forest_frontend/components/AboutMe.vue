@@ -130,7 +130,7 @@ onMounted(() => {
      <v-card-item style="padding: 0!important;">
        <v-btn
            variant="outlined"
-           style="margin: 0 16px; width: calc(100% - 32px)"
+           style="margin: 0 16px; width: calc(100% - 32px); text-transform: none !important;"
            :href="`https://github.com/kanned1079`"
            rel="noopener"
            target="_blank"

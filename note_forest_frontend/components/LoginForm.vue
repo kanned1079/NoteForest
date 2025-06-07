@@ -198,12 +198,12 @@ const submitForm = async () => {
 <style scoped lang="less">
 .login-card-body {
   width: 90vw;       // 宽度最大占视口的90%
-  max-width: 360px;  // 最大宽度限制为360px
+  max-width: 400px;  // 最大宽度限制为360px
   margin: 30px auto 0 auto; // 顶部30px，左右居中
   padding-bottom: 30px;
 
   @media (min-width: 480px) {
-    width: 360px; // 480px以上就固定360px宽
+    width: 400px; // 480px以上就固定360px宽
   }
 }
 

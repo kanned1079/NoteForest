@@ -6,7 +6,9 @@ import { useCommonFetch } from "~/composables/useCommonFetch";
 import { useRouter, useRoute } from "#vue-router";
 import { useI18n } from "vue-i18n";
 import { ref, onMounted, onBeforeMount } from 'vue'
+import useThemeStore from "~/store/themeStore";
 
+const themeStore = useThemeStore()
 const { locale, t } = useI18n()
 const router = useRouter()
 const route = useRoute()
@@ -41,9 +43,14 @@ const fetchDocumentsOnClient = async () => {
   // )
 
   try {
+    showSearchDialog.value = false
     const data = await $fetch<GetDocumentsData>(`/api/v2/document?search=${searchTitle.value}&page=${page.value}&size=${size.value}`)
     console.log(data.documents)
-    knowledgeList.value = data.documents
+    if (data.documents && data.documents.length > 0) {
+      knowledgeList.value = data.documents
+    } else {
+      themeStore.showMessage(t('docList.searchResultNoData'), 'warning')
+    }
     total.value = data.total || 0
   } catch (err: any) {
     console.log(t('docList.fetchError')) // 使用现有翻译键

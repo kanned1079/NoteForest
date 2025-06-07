@@ -39,9 +39,9 @@ onBeforeUnmount(() => stop?.())
       <v-card-text>
         <p style="opacity: 0.5;">{{ error.message }}</p>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions style="padding: 16px ">
 <!--        <NuxtLink to="/note_forest_frontend/public">回首頁</NuxtLink>-->
-        <v-btn :to="'/'">BACK</v-btn>
+        <NuxtLink :to="'/'">Back</NuxtLink>
       </v-card-actions>
 
     </v-card>
@@ -52,6 +52,10 @@ onBeforeUnmount(() => stop?.())
 </template>
 
 <style lang="less">
+*{
+  text-transform: none !important;
+}
+
 .root {
   padding: 10px;
 }

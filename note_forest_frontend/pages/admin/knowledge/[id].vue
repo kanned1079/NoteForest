@@ -251,14 +251,14 @@ const commitDocClick = async () => {
   }
 }
 
-onBeforeMount( () => {
+onBeforeMount( async () => {
   console.log(route.params.id)
   if (route.params.id) {
     if (route.params.id === 'new') {
       // 新建
       editType.value = 'create'
     } else {
-      let {code, data} = getDocumentByUuid(route.params.id as string)
+      let {code, data} = await getDocumentByUuid(route.params.id as string)
       if (code === 200 && data) {
         docData.value = data
         editType.value = 'edit'

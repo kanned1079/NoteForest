@@ -22,7 +22,7 @@ export const verifyToken = (token: string): {id: string, role: string} | null =>
     // console.log('call verifyToken')
     const config = useRuntimeConfig()
     try {
-        return jwt.verify(token, config.jwtSecret as string) as {id: string, role: string}
+        return jwt.verify(token, process.env.JWT_SECRET as string) as {id: string, role: string}
     } catch (e: any) {
         console.error(e)
         return null

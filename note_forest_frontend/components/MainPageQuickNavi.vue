@@ -7,6 +7,7 @@ import { useRouter, useRoute } from "#vue-router";
 import { useI18n } from "vue-i18n";
 import { ref, onMounted, onBeforeMount } from 'vue'
 import useThemeStore from "~/store/themeStore";
+import {useFormatTags} from "~/composables/useFormatTagsStr";
 
 const themeStore = useThemeStore()
 const { locale, t } = useI18n()
@@ -147,8 +148,20 @@ onBeforeMount(() => {
         <p class="font-weight-black" style="font-size: 1.3rem">{{ i.title }}</p>
         <p class="mt-1">{{ i.subtitle.slice(0, 40) }}{{ i.subtitle.length > 40 ? '...' : '' }}</p>
         <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start">
-          <div style="opacity: 0.7;" class="mr-4">{{ i.id }}</div>
-          <p :style="i.created_at !== i.updated_at ? { textDecoration: 'line-through' } : null" style="opacity: 0.5;">
+<!--          <div style="opacity: 0.7;" class="mr-4">{{ i.id }}</div>-->
+          <v-chip
+              v-for="(tag, index) in useFormatTags(i.category)"
+              :key="index"
+              class="mr-1"
+              label
+              variant="flat"
+              style="opacity: 0.9"
+              density="comfortable"
+              size="x-small"
+          >
+            {{ tag }}
+          </v-chip>
+          <p :style="i.created_at !== i.updated_at ? { textDecoration: 'line-through' } : null" style="opacity: 0.5; margin-left: 8px">
             {{ new Date(i.created_at || '').toLocaleString() }}
           </p>
           <v-icon v-if="i.created_at !== i.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">

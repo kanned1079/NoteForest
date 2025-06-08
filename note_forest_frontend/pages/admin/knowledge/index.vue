@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import {useFormatTags} from "../../../composables/useFormatTagsStr";
+
 definePageMeta({
   layout: 'empty',
   pageTransition: {
     name: 'layout-fade'
   }
 })
-import { ref, shallowRef, onMounted, watch, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { deleteDocumentByUuid, fetchAllDocuments } from '~/api/document'
-import type { DocumentItem } from '~/types/doc'
+import {ref, shallowRef, onMounted, watch, computed} from 'vue'
+import {useI18n} from 'vue-i18n'
+import {deleteDocumentByUuid, fetchAllDocuments} from '~/api/document'
+import type {DocumentItem} from '~/types/doc'
 import useThemeStore from "~/store/themeStore";
 
 const themeStore = useThemeStore()
-const { locale, t } = useI18n()
+const {locale, t} = useI18n()
 
 const knowledgeArr = ref<DocumentItem[]>([])
 const total = ref(0)
@@ -43,11 +45,14 @@ const isEditing = shallowRef(false)
 const showFetchErr = ref<boolean>(false)
 
 const headers = [
-  { title: t('docList.titleColumn'), key: 'title' },
-  { title: t('docList.subtitleColumn'), key: 'subtitle' },
-  { title: t('docList.categoryColumn'), key: 'category' },
-  { title: t('docList.createdAtColumn'), key: 'created_at' },
-  { title: t('docList.actionsColumn'), key: 'actions', sortable: false },
+  // {title: "uuid", key: "id"},
+  {title: t('docList.titleColumn'), key: 'title'},
+  // {title: t('docList.subtitleColumn'), key: 'subtitle'},
+  {title: t('docList.withHeaderImage'), key: 'image_url'},
+  {title: t('docList.categoryColumn'), key: 'category'},
+  {title: t('docList.createdAtColumn'), key: 'created_at'},
+  {title: t('docList.updatedAtColumn'), key: 'updated_at'},
+  {title: t('docList.actionsColumn'), key: 'actions', sortable: false},
 ]
 
 const searchContent = ref<string>('')
@@ -73,7 +78,7 @@ const fetchData = async () => {
 watch([page, size], fetchData)
 
 function edit(item: DocumentItem) {
-  record.value = { ...item }
+  record.value = {...item}
   isEditing.value = true
   dialog.value = true
   if (item.id) {
@@ -94,7 +99,7 @@ const remove = (item: DocumentItem) => {
 }
 
 const runRemove = async () => {
-  const { code, err } = await deleteDocumentByUuid(deleteUuid.value)
+  const {code, err} = await deleteDocumentByUuid(deleteUuid.value)
   if (code === 200) {
     themeStore.showMessage(t('docEdit.saveSuccess'), 'success') // 复用保存成功提示
     showDeleteDialog.value = false
@@ -109,7 +114,7 @@ const runRemove = async () => {
 const getSelectSize = computed<{ title: string, value: number }[]>(() => {
   const sizeDataRaw: number[] = [5, 10, 20, 50, 100, 200]
   return sizeDataRaw.map(nums => ({
-    title: `${nums} ${t('docList.itemsPerPage')}` , // 带参数的翻译（需配置参数）
+    title: `${nums} ${t('docList.itemsPerPage')}`, // 带参数的翻译（需配置参数）
     value: nums
   }))
 })
@@ -233,12 +238,48 @@ onUnmounted(() => {
               hide-default-footer
               striped
           >
-            <template v-slot:item.created_at="{ value }">
-              {{ new Date(value).toLocaleDateString() }}
+
+
+            <template v-slot:item.image_url="{ value }">
+              <v-chip
+                  class="ma-1"
+                  label
+                  variant="tonal"
+                  size="x-small"
+                  :color="value?'success':'default'"
+              >
+                {{ t(value?t('docList.set'):'docList.unset') }}
+              </v-chip>
             </template>
 
-            <template v-slot:item.subtitle="{ value }">
-              {{ value.length > 40 ? value.slice(0, 40) + '...' : value }}
+            <template v-slot:item.category="{ value }">
+              <v-chip
+                  v-for="(tag, index) in useFormatTags(value as string)"
+                  :key="index"
+                  class="ma-1"
+                  label
+                  color="primary-darken-1"
+                  variant="tonal"
+                  size="x-small"
+              >
+                {{ tag }}
+              </v-chip>
+            </template>
+
+            <template v-slot:item.title="{ value }">
+              {{ value }}
+            </template>
+
+<!--            <template v-slot:item.subtitle="{ value }">-->
+<!--              {{ value.length > 20 ? value.slice(0, 20) + '...' : value }}-->
+<!--            </template>-->
+
+            <template v-slot:item.created_at="{ value }">
+              {{ new Date(value).toDateString() }}
+            </template>
+
+            <template v-slot:item.updated_at="{ value }">
+              {{ new Date(value).toDateString() }}
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -256,7 +297,7 @@ onUnmounted(() => {
       <template v-slot:actions>
         <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%;">
           <div style="font-size: 0.8rem" class="ml-3">
-            {{ t('docList.itemsPerPageLabel') }}  {{ size }} <!-- 带参数的翻译 -->
+            {{ t('docList.itemsPerPageLabel') }} {{ size }} <!-- 带参数的翻译 -->
           </div>
           <div style="display: flex; flex-direction: row; align-items: center" class="mr-1">
             <v-menu>

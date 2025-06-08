@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useFormatTags} from "~/composables/useFormatTagsStr";
+
 definePageMeta({
   layout: 'empty',
   pageTransition: {
@@ -6,7 +8,6 @@ definePageMeta({
   }
 })
 import useThemeStore from "~/store/themeStore";
-
 
 
 import {type ConfigOption, MdEditor} from 'md-editor-v3';
@@ -190,7 +191,7 @@ mdEditorConfig({
       },
     },
   },
-} );
+});
 
 const docData = ref<DocumentItem>({
   id: '',
@@ -220,7 +221,7 @@ const commitDocClick = async () => {
   console.log('commit doc')
 
   if (editType.value === 'create') {
-    const { code, err } = await commitNewDocument(docData.value)
+    const {code, err} = await commitNewDocument(docData.value)
 
     if (code === 200) {
       themeStore.showMessage(t('docEdit.saveSuccess'), 'success')
@@ -232,7 +233,7 @@ const commitDocClick = async () => {
     }
 
   } else if (editType.value === 'edit') {
-    const { code, err } = await updateDocumentByUuid(docData.value.id, docData.value)
+    const {code, err} = await updateDocumentByUuid(docData.value.id, docData.value)
     console.log('修改code', code)
 
     if (code === 200) {
@@ -251,7 +252,37 @@ const commitDocClick = async () => {
   }
 }
 
-onBeforeMount( async () => {
+const input = ref('')
+const tags = ref<string[]>([])
+
+// 添加标签
+const addTag = () => {
+  if(tags.value.length < 3) {
+    const trimmed = input.value.trim()
+    if (trimmed) {
+      tags.value.push(trimmed)
+      input.value = ''
+      updateDocCategory()
+    }
+  } else {
+    themeStore.showMessage('full', 'warning')
+  }
+
+}
+
+// 移除标签
+const removeTag = (index: number) => {
+  tags.value.splice(index, 1)
+  updateDocCategory()
+}
+
+// 更新 docData.category 字符串
+const updateDocCategory = () => {
+  docData.value.category = tags.value.map(tag => `[${tag}]`).join(' ')
+  console.log(docData.value.category)
+}
+
+onBeforeMount(async () => {
   console.log(route.params.id)
   if (route.params.id) {
     if (route.params.id === 'new') {
@@ -261,6 +292,16 @@ onBeforeMount( async () => {
       let {code, data} = await getDocumentByUuid(route.params.id as string)
       if (code === 200 && data) {
         docData.value = data
+        if (docData.value.category) {
+          // const rawTags = docData.value.category.toString().split(' ')
+          // rawTags.forEach((tag) => {
+          //   const cleanTag = tag.trim().replace(/^\[|\]$/g, '') // 去除前后的 [ 和 ]
+          //   if (cleanTag) {
+          //     tags.value.push(cleanTag)
+          //   }
+          // })
+          useFormatTags(docData.value.category).map((tagItem: string) => tags.value.push(tagItem))
+        }
         editType.value = 'edit'
       }
     }
@@ -268,7 +309,7 @@ onBeforeMount( async () => {
 })
 
 onMounted(() => {
-  docData.value.title = locale.value==='zh-cn'?'未命名文档':'Untitled document'
+  docData.value.title = locale.value === 'zh-cn' ? '未命名文档' : 'Untitled document'
 })
 </script>
 
@@ -284,38 +325,40 @@ onMounted(() => {
     >
       <template v-slot:append>
         <v-btn
-          color="primary"
-          variant="tonal"
-          @click="showMeta=true"
-          style="text-transform: none !important;"
+            color="primary"
+            variant="tonal"
+            @click="showMeta=true"
+            style="text-transform: none !important;"
         >
-          <template v-slot:prepend><v-icon>mdi-book-information-variant</v-icon></template>
+          <template v-slot:prepend>
+            <v-icon>mdi-book-information-variant</v-icon>
+          </template>
           {{ t('docEdit.editMeta') }}
         </v-btn>
       </template>
 
       <v-card-item>
         <div class="mt-2">
-<!--          <v-text-field-->
-<!--              density="compact"-->
-<!--              variant="outlined"-->
-<!--              label="文章标题"-->
-<!--              v-model="docData.title"-->
-<!--          ></v-text-field>-->
+          <!--          <v-text-field-->
+          <!--              density="compact"-->
+          <!--              variant="outlined"-->
+          <!--              label="文章标题"-->
+          <!--              v-model="docData.title"-->
+          <!--          ></v-text-field>-->
 
-<!--          <v-text-field-->
-<!--              density="compact"-->
-<!--              variant="outlined"-->
-<!--              label="文章副标题"-->
-<!--              v-model="docData.subtitle"-->
-<!--          ></v-text-field>-->
+          <!--          <v-text-field-->
+          <!--              density="compact"-->
+          <!--              variant="outlined"-->
+          <!--              label="文章副标题"-->
+          <!--              v-model="docData.subtitle"-->
+          <!--          ></v-text-field>-->
 
-<!--          <v-text-field-->
-<!--              density="compact"-->
-<!--              variant="outlined"-->
-<!--              label="分类"-->
-<!--              v-model="docData.category"-->
-<!--          ></v-text-field>-->
+          <!--          <v-text-field-->
+          <!--              density="compact"-->
+          <!--              variant="outlined"-->
+          <!--              label="分类"-->
+          <!--              v-model="docData.category"-->
+          <!--          ></v-text-field>-->
 
           <MdEditor
               v-model="docData.content"
@@ -334,16 +377,21 @@ onMounted(() => {
             variant="flat"
             @click="commitDocClick"
         >
-          <template v-slot:prepend><v-icon>mdi-content-save</v-icon></template>
-          {{ editType === 'create' ? t('docEdit.commit') : t('docEdit.confirmEdit') }}</v-btn>
+          <template v-slot:prepend>
+            <v-icon>mdi-content-save</v-icon>
+          </template>
+          {{ editType === 'create' ? t('docEdit.commit') : t('docEdit.confirmEdit') }}
+        </v-btn>
 
         <v-btn
             variant="tonal"
             @click="showCancelConfirmDialog=true"
         >
-          <template v-slot:prepend><v-icon>mdi-close-box-multiple</v-icon></template>
+          <template v-slot:prepend>
+            <v-icon>mdi-close-box-multiple</v-icon>
+          </template>
           {{ t('docEdit.cancel') }}
-          </v-btn>
+        </v-btn>
       </v-card-actions>
 
     </v-card>
@@ -381,12 +429,12 @@ onMounted(() => {
         class="v-dialog"
     >
       <v-card
-        hover
-        variant="flat"
-        density="comfortable"
-        class="mx-auto"
-        :title="t('docEdit.editMeta')"
-        :subtitle="t('docEdit.editMetaTip')"
+          hover
+          variant="flat"
+          density="comfortable"
+          class="mx-auto"
+          :title="t('docEdit.editMeta')"
+          :subtitle="t('docEdit.editMetaTip')"
       >
 
         <template v-slot:prepend>
@@ -398,7 +446,8 @@ onMounted(() => {
               class="close-meta-icon"
               @click="showMeta = false"
           >
-            mdi-window-close</v-icon>
+            mdi-window-close
+          </v-icon>
         </template>
         <v-card-item>
           <div class="mt-2">
@@ -416,12 +465,48 @@ onMounted(() => {
                 v-model="docData.subtitle"
             ></v-text-field>
 
+            <!--            <v-text-field-->
+            <!--                density="compact"-->
+            <!--                variant="outlined"-->
+            <!--                :label="t('docEdit.category')"-->
+            <!--                v-model="docData.category"-->
+            <!--            ></v-text-field>-->
+
+            <!--            <div class="flex items-center flex-wrap mb-2">-->
+            <!--              <v-chip-->
+            <!--                  v-for="(tag, index) in tags"-->
+            <!--                  :key="index"-->
+            <!--                  class="ma-1"-->
+            <!--                  closable-->
+            <!--                  @click:close="removeTag(index)"-->
+            <!--              >-->
+            <!--                {{ tag }}-->
+            <!--              </v-chip>-->
+            <!--            </div>-->
+
             <v-text-field
                 density="compact"
                 variant="outlined"
                 :label="t('docEdit.category')"
-                v-model="docData.category"
-            ></v-text-field>
+                v-model="input"
+                @keydown.enter.prevent="addTag"
+            >
+              <template v-slot:prepend-inner>
+                <v-chip
+                    v-for="(tag, index) in tags"
+                    :key="index"
+                    class="ma-1"
+                    closable
+                    label
+                    variant="tonal"
+                    @click:close="removeTag(index)"
+                    size="x-small"
+                >
+                  {{ tag }}
+                </v-chip>
+              </template>
+
+            </v-text-field>
 
             <v-text-field
                 density="compact"
@@ -435,7 +520,6 @@ onMounted(() => {
                 height="200"
                 class="mt-4 mb-4"
                 v-if="docData.image_url"
-
             >
               <v-parallax
                   :src="docData.image_url"
@@ -444,7 +528,7 @@ onMounted(() => {
               </v-parallax>
             </v-card>
 
-            </div>
+          </div>
         </v-card-item>
 
 
@@ -466,11 +550,11 @@ onMounted(() => {
   border: #919191 solid 1px;
   --md-border-active-color: #000 !important;
   height: calc(100vh - 140px);
-  --md-bk-color: rgba(0,0,0,0.0) !important;
+  --md-bk-color: rgba(0, 0, 0, 0.0) !important;
 }
 
 .md-editor-dark {
-  --md-bk-color: rgba(0,0,0,0.0) !important;
+  --md-bk-color: rgba(0, 0, 0, 0.0) !important;
   --md-border-color: #989898 !important;
 }
 
@@ -506,6 +590,7 @@ onMounted(() => {
   color: var(--v-theme-on-surface);
   transition: color 0.3s ease;
 }
+
 .close-meta-icon:hover {
   color: var(--v-theme-error);
 }

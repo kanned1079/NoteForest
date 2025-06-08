@@ -19,7 +19,8 @@ const props = defineProps<{
 
 function isMacPlatform() {
   if ('userAgentData' in navigator) {
-    return navigator.userAgentData.platform === 'macOS'
+    // 使用类型断言告诉 TypeScript 这个属性存在
+    return (navigator as any).userAgentData.platform === 'macOS'
   }
   return /mac/i.test(navigator.userAgent)
 }

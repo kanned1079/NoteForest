@@ -94,7 +94,7 @@ const loginOrRegClick = () => {
 const bottomClick = (path: string) => {
   if (path === 'admin') {
     // 登入
-    if (userStore.isAuthed && userStore.user.role==='admin') {
+    if (userStore.isAuthed && userStore.user.role==='ADMIN') {
       navigateTo({path: `/${locale.value}/admin`})
     }
   } else if (path === 'exit' && userStore.isAuthed) {

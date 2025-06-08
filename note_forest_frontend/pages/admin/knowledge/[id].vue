@@ -190,7 +190,7 @@ mdEditorConfig({
       },
     },
   },
-}  as ConfigOption);
+} );
 
 const docData = ref<DocumentItem>({
   id: '',
@@ -251,14 +251,14 @@ const commitDocClick = async () => {
   }
 }
 
-onBeforeMount(async () => {
+onBeforeMount( () => {
   console.log(route.params.id)
   if (route.params.id) {
     if (route.params.id === 'new') {
       // 新建
       editType.value = 'create'
     } else {
-      let {code, data} = await getDocumentByUuid(route.params.id)
+      let {code, data} = getDocumentByUuid(route.params.id as string)
       if (code === 200 && data) {
         docData.value = data
         editType.value = 'edit'
@@ -268,7 +268,7 @@ onBeforeMount(async () => {
 })
 
 onMounted(() => {
-  docData.value.title = locale.value==='cn'?'未命名文档':'Untitled document'
+  docData.value.title = locale.value==='zh-cn'?'未命名文档':'Untitled document'
 })
 </script>
 

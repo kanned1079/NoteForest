@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     const { page, size, search, list } = parsed.data
     const skip = (page - 1) * size
 
-    console.log(page, size, search, list)
+    // console.log(page, size, search, list)
 
     const whereClause = search
         ? {

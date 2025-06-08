@@ -60,25 +60,6 @@ const showData = computed<ShowStatisticPageDataItem[]>(() => [
   },
 ])
 
-const showData2 = ref<ShowStatisticPageDataItem[]>([
-  {
-    name: 'all',
-    data: statisticData.value.documents.total,
-  },
-  {
-    name: 'active',
-    data: statisticData.value.documents.active,
-  },
-  {
-    name: 'deleted',
-    data: statisticData.value.documents.deleted,
-  },
-  {
-    name: 'users',
-    data: statisticData.value.users,
-  },
-])
-
 const getStatistic = async () => {
   try {
     const token = useCookie('token')

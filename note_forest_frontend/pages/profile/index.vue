@@ -38,9 +38,9 @@ const changePwdClick = () => {
   showResetPwdDialog.value = true
 };
 
-const handleClickUpdateUsername = () => {
-  let {code} = updateUsername()
-}
+// const handleClickUpdateUsername = () => {
+//   let {code} = updateUsername()
+// }
 
 onMounted(() => {
   if (userStore.isAuthed && userStore.user.id) {
@@ -85,7 +85,7 @@ onMounted(() => {
           <!-- 用户名 字段 -->
           <div class="field-item">
             <div class="field-content">
-              <p class="field-title">
+              <p class="field-title" v-if="userStore.user.created_at">
                 {{ new Date(userStore.user.created_at).toLocaleString() || 'undefined' }}
               </p>
             </div>

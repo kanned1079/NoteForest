@@ -156,11 +156,11 @@ onMounted(() => {
       variant="flat"
       height="200"
       class="mt-8 mb-8"
-      v-if="documentData.image_url"
+      v-if="documentData?.image_url"
 
     >
       <v-parallax
-          :src="documentData.image_url"
+          :src="documentData?.image_url"
           scale="1"
       >
       </v-parallax>

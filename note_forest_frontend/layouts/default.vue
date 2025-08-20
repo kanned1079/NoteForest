@@ -7,6 +7,8 @@ import {useTheme} from "vuetify/framework";
 import CommonHeaderLeft from "~/components/CommonHeaderLeft.vue";
 import LatestMoment from "~/components/LatestMoment.vue";
 
+import mihuan51 from "~/public/mihuan51.jpg"
+
 const theme = useTheme()
 const themeStore = useThemeStore()
 const {t} = useI18n()
@@ -14,10 +16,11 @@ const {t} = useI18n()
 
 <template>
   <v-responsive>
-    <v-app>
-
-
+    <v-app class="app" :style="themeStore.isDarkModeEnabled?{}:{backgroundImage: `url(${mihuan51})`}">
 <!--        <v-parallax src="https://ikanned.com:2444/d/Upload/pexels-martin-p%C3%A9chy-5335217.jpg">-->
+
+
+<!--      <MainPreview />-->
 
           <v-navigation-drawer
               :width="300"
@@ -32,11 +35,29 @@ const {t} = useI18n()
           <v-app-bar
               :elevation="0"
               :height="56"
-              style="background-color: rgba(0,0,0,0.0); backdrop-filter: blur(10px)"
+              style="background-color: rgba(0,0,0,0.0); backdrop-filter: blur(10px);"
           >
             <template v-slot:prepend>
               <CommonHeaderLeft/>
             </template>
+
+<!--            <v-btn-->
+<!--                style="opacity: 0.8;text-transform: none"-->
+<!--                variant="flat"-->
+<!--                class="ml-3"-->
+<!--                density="default"-->
+<!--                @click="showSearchDialog=true"-->
+<!--            >-->
+<!--              <template v-slot:prepend>-->
+<!--                <v-icon class="mr-2">mdi-magnify</v-icon>-->
+<!--              </template>-->
+<!--              {{ t('docList.searchArticles') }}-->
+<!--              <template v-slot:append>-->
+<!--                <div class="ml-3" style="border: #a5a5a5 1px solid; border-radius: 4px; padding: 1px 4px; font-size: 0.7rem;text-transform: none">-->
+<!--                  {{ t('docList.searchShortcut') }}-->
+<!--                </div>-->
+<!--              </template>-->
+<!--            </v-btn>-->
 
             <template v-slot:append>
               <CommonHeaderRight/>
@@ -54,7 +75,8 @@ const {t} = useI18n()
                     order-md="1"
                     style="height: auto;"
                 >
-                  <AboutMe />
+<!--                  <AboutMe />-->
+                  <AboutMeNew />
                 </v-col>
 
                 <!-- 区域 B -->
@@ -83,6 +105,14 @@ const {t} = useI18n()
 </template>
 
 <style lang="less" scoped>
+
+.app {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
 .drawer-root {
 
 }

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import type {GithubUserSearchResponse} from '~/types/github'
+// import type {GithubUserSearchResponse} from '~/types/github'
 import {useI18n} from "vue-i18n";
 import {useApiFetchRequest} from "~/composables/useApiFetch";
+import useThemeStore from "~/store/themeStore";
 
 const {t} = useI18n()
+const themeStore = useThemeStore()
 
-const githubUsername = 'kanned1079'
+// const githubUsername = 'kanned1079'
 const githubAvatarUrl = `https://ikanned.com:2444/d/Upload/58361983.jpeg`
 
 // 预取数据，SSR + 客户端共享
@@ -50,7 +52,7 @@ const myUser = ref<GithubUserSearchResponse | null>({
 })
 
 onMounted(() => {
-  console.log(myUser.value)
+  // console.log(myUser.value)
 })
 
 </script>
@@ -82,31 +84,20 @@ onMounted(() => {
         elevation="0"
     >
       <template v-slot:title>
-<!--        <span class="font-weight-black">{{ myUser?.items[0].login }}</span>-->
         <span class="font-weight-black">{{ 'kanned1079' }}</span>
       </template>
 
       <template v-slot:prepend>
         <v-avatar>
-<!--          <v-img-->
-<!--              v-if="myUser?.items[0].avatar_url"-->
-<!--              :src="myUser?.items[0].avatar_url">-->
-<!--          </v-img>-->
-          <!--          <v-icon v-else>{{ 'mdi-account-box-multiple' }}</v-icon>-->
-                    <v-icon>{{ 'mdi-text-box-multiple-outline' }}</v-icon>
+          <v-icon>{{ 'mdi-text-box-multiple-outline' }}</v-icon>
         </v-avatar>
       </template>
 
-      <v-card-text
-          style="text-indent: 2em"
-      >
+      <v-card-text style="text-indent: 2em">
         {{ t(`aboutMe.selfIntroduction.p1`) }}
         {{ t(`aboutMe.selfIntroduction.p2`) }}
       </v-card-text>
-      <v-card-text
-          style="text-indent: 2em; padding-top: 0"
-
-      >
+      <v-card-text style="text-indent: 2em; padding-top: 0">
         {{ t(`aboutMe.selfIntroduction.p3`) }}
       </v-card-text>
     </v-card>
@@ -122,28 +113,29 @@ onMounted(() => {
         variant="outlined"
         :border="0"
         elevation="0"
+        :color="!themeStore.isDarkModeEnabled?'primary-darken-1':null"
     >
       <v-card-text style="text-indent: 2em">
         {{ t('aboutMe.subscribeDescription') }}
       </v-card-text>
 
-     <v-card-item style="padding: 0!important;">
-       <v-btn
-           variant="outlined"
-           style="margin: 0 16px; width: calc(100% - 32px); text-transform: none !important;"
-           :href="`https://github.com/kanned1079`"
-           rel="noopener"
-           target="_blank"
-       >
-         <template v-slot:prepend>
-           <v-icon size="large">mdi-github</v-icon>
-         </template>
-         <template v-slot:append>
-           <v-icon size="small">mdi-open-in-new</v-icon>
-         </template>
-         <p>{{ t('aboutMe.viewOnGithub') }}</p>
-       </v-btn>
-     </v-card-item>
+      <v-card-item style="padding: 0!important;">
+        <v-btn
+            variant="outlined"
+            style="margin: 0 16px; width: calc(100% - 32px); text-transform: none !important;"
+            :href="`https://github.com/kanned1079`"
+            rel="noopener"
+            target="_blank"
+        >
+          <template v-slot:prepend>
+            <v-icon size="large">mdi-github</v-icon>
+          </template>
+          <template v-slot:append>
+            <v-icon size="small">mdi-open-in-new</v-icon>
+          </template>
+          <p>{{ t('aboutMe.viewOnGithub') }}</p>
+        </v-btn>
+      </v-card-item>
 
       <v-card-item subtitle="WechatID: kanned1079" style="padding: 10px 16px 0 16px">
         <template v-slot:title>{{ t('aboutMe.wechat') }}</template>
@@ -153,9 +145,6 @@ onMounted(() => {
         <template v-slot:title>{{ t('aboutMe.phone') }}</template>
       </v-card-item>
     </v-card>
-
-
-
   </div>
 </template>
 

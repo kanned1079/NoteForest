@@ -109,7 +109,7 @@ const bottomClick = (path: string) => {
 
 onMounted(() => {
   // userStore.user.email = 'swdw'
-  console.log(locale)
+  // console.log(locale)
 })
 
 

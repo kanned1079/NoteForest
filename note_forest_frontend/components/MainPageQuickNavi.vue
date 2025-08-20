@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { useApiFetchRequest } from "~/composables/useApiFetch";
-import type { GithubUserSearchResponse } from "~/types/github";
-import type { DocumentItem, GetDocumentsData } from "~/types/doc";
-import { useCommonFetch } from "~/composables/useCommonFetch";
-import { useRouter, useRoute } from "#vue-router";
-import { useI18n } from "vue-i18n";
-import { ref, onMounted, onBeforeMount } from 'vue'
+import {useApiFetchRequest} from "~/composables/useApiFetch";
+import type {GithubUserSearchResponse} from "~/types/github";
+import type {DocumentItem, GetDocumentsData} from "~/types/doc";
+import {useCommonFetch} from "~/composables/useCommonFetch";
+import {useRouter, useRoute} from "#vue-router";
+import {useI18n} from "vue-i18n";
+import {ref, onMounted, onBeforeMount} from 'vue'
 import useThemeStore from "~/store/themeStore";
 import {useFormatTags} from "~/composables/useFormatTagsStr";
 
 const themeStore = useThemeStore()
-const { locale, t } = useI18n()
+const {locale, t} = useI18n()
 const router = useRouter()
 const route = useRoute()
+
+import darkBg from "~/public/mihuan51.jpg"
 
 const props = defineProps<{
   overview: boolean
@@ -47,7 +49,7 @@ const fetchDocumentsOnClient = async () => {
   try {
     showSearchDialog.value = false
     const data = await $fetch<GetDocumentsData>(`/api/v2/document?search=${searchTitle.value}&page=${page.value}&size=${size.value}`)
-    console.log(data.documents)
+    // console.log(data.documents)
     if (data.documents && data.documents.length > 0) {
       knowledgeList.value = data.documents
     } else {
@@ -69,11 +71,11 @@ const fetchDocumentsOnClient = async () => {
 const knowledgeList = ref<DocumentItem[]>([])
 const showSearchDialog = ref<boolean>(false)
 const page = ref<number>(1)
-const size = ref<number>(10)
+const size = ref<number>(20)
 const total = ref<number>(0)
 
 const knowledgeItemClick = (id: string) => {
-  navigateTo({ path: `/${locale.value}/knowledge/${id}` })
+  navigateTo({path: `/${locale.value}/knowledge/${id}`})
 }
 
 onBeforeMount(() => {
@@ -82,7 +84,7 @@ onBeforeMount(() => {
     isMainPage.value = false
     const sizeFromLocal = localStorage.getItem('size')
     if (sizeFromLocal) {
-      size.value = JSON.parse(sizeFromLocal) || 10
+      size.value = JSON.parse(sizeFromLocal) || 20
     }
   } else {
     isMainPage.value = true
@@ -103,6 +105,21 @@ onBeforeMount(() => {
 
 <template>
   <div class="root">
+
+    <!--    <v-card-->
+    <!--        v-if="route.path !== `/${locale}/knowledge`"-->
+    <!--        color="primary"-->
+    <!--        variant="outlined"-->
+    <!--    >-->
+    <!--      <v-card-title>-->
+    <!--        Welcome-->
+    <!--      </v-card-title>-->
+    <!--    </v-card>-->
+
+
+
+
+
     <div class="search-root">
       <v-btn
           style="opacity: 0.8;text-transform: none"
@@ -129,50 +146,76 @@ onBeforeMount(() => {
         </template>
         {{ t('docList.searchArticles') }}
         <template v-slot:append>
-          <div class="ml-3" style="border: #a5a5a5 1px solid; border-radius: 4px; padding: 1px 4px; font-size: 0.7rem;text-transform: none">
+          <div class="ml-3"
+               style="border: #a5a5a5 1px solid; border-radius: 4px; padding: 1px 4px; font-size: 0.7rem;text-transform: none">
             {{ t('docList.searchShortcut') }}
           </div>
         </template>
       </v-btn>
     </div>
 
+    <p
+        v-if="isMainPage"
+        style="font-size: 0.7rem; margin: 10px 0 20px 0; opacity: 0.7; text-align: right">
+      {{ t('docList.paginationTip') }}
+    </p>
+
     <v-card
         v-for="i in knowledgeList"
+        :key="i.id"
         variant="outlined"
-        border="1"
-        elevation="0"
-        class="mt-6 doc-item pb-0"
+        border="0"
+        class="mt-2 doc-item pb-0"
         @click="knowledgeItemClick(i.id)"
+        :color="isMainPage&&!themeStore.isDarkModeEnabled?'primary-darken-1':null"
+        append-icon="mdi-open-in-new"
     >
-      <v-card-text style="padding: 10px 16px">
-        <p class="font-weight-black" style="font-size: 1.3rem">{{ i.title }}</p>
-        <p class="mt-1">{{ i.subtitle.slice(0, 40) }}{{ i.subtitle.length > 40 ? '...' : '' }}</p>
-        <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start">
-<!--          <div style="opacity: 0.7;" class="mr-4">{{ i.id }}</div>-->
-          <v-chip
-              v-for="(tag, index) in useFormatTags(i.category)"
-              :key="index"
-              class="mr-1"
-              label
-              variant="flat"
-              style="opacity: 0.9"
-              density="comfortable"
-              size="x-small"
-          >
-            {{ tag }}
-          </v-chip>
-          <p :style="i.created_at !== i.updated_at ? { textDecoration: 'line-through' } : null" style="opacity: 0.5; margin-left: 8px">
-            {{ new Date(i.created_at || '').toLocaleString() }}
-          </p>
-          <v-icon v-if="i.created_at !== i.updated_at" size="small" class="ml-1 mr-1" style="opacity: 0.6">
-            mdi-arrow-right-thin
-          </v-icon>
-          <p v-if="i.created_at !== i.updated_at" style="opacity: 0.6;">
-            {{ new Date(i.updated_at || '').toLocaleString() }} {{ t('docList.updated') }}
-          </p>
-        </div>
-      </v-card-text>
+      <template v-slot:title>
+        <p style="white-space: normal; word-break: break-word; margin: 0; font-size: 1.1rem">
+          {{ i.title }}
+        </p>
+      </template>
+
+      <template v-slot:subtitle>
+        <p style="white-space: normal; word-break: break-word; margin: 0; font-size: 0.7rem">
+          {{ i.subtitle }}
+        </p>
+      </template>
+
+      <template v-slot:item>
+        <v-chip
+            v-if="false"
+            v-for="(tag, index) in useFormatTags(i.category)"
+            :key="index"
+            class="mr-1"
+            label
+            variant="flat"
+            style="opacity: 0.6"
+            density="comfortable"
+            size="x-small"
+            color="primary"
+            :style="index === useFormatTags(i.category).length - 1
+                ? { marginRight: '8px !important' }
+                : null"
+        >
+          {{ tag }}
+        </v-chip>
+
+        <p
+            v-if="i.created_at !== i.updated_at"
+            style="opacity: 0.6; font-size: 0.8rem"
+        >
+          {{ new Date(i.updated_at || '').toLocaleString() }}
+          {{ t('docList.updated') }}
+        </p>
+      </template>
     </v-card>
+    <!--          </v-col>-->
+    <!--        </v-row>-->
+    <!--      </v-container>-->
+
+
+
 
     <PaginationFooter
         v-if="!isMainPage"
@@ -183,7 +226,7 @@ onBeforeMount(() => {
         @update="fetchDocumentsOnClient"
     />
 
-    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7; margin-left: 4px" v-else>
+    <p v-if="false" style="font-size: 0.7rem; margin-top: 30px; opacity: 0.7; margin-left: 4px" >
       {{ t('docList.paginationTip') }}
     </p>
 
@@ -210,7 +253,7 @@ onBeforeMount(() => {
 
 <style scoped lang="less">
 .root {
-  padding-top: 16px;
+  padding-top: 10px;
 
   .search-root {
     text-align: right;

@@ -51,7 +51,7 @@ const langClick = (langCode: LangCode) => {
           variant="plain"
           v-bind="props"
       >
-        <v-icon size="large">{{ 'mdi-translate-variant' }}</v-icon>
+        <v-icon style="" size="large">{{ 'mdi-translate-variant' }}</v-icon>
       </v-btn>
     </template>
     <v-list
@@ -74,6 +74,7 @@ const langClick = (langCode: LangCode) => {
 <v-btn
     variant="plain"
     @click="colorSchemeClick"
+
 >
   <v-icon size="large">{{ 'mdi-white-balance-sunny' }}</v-icon>
 </v-btn>

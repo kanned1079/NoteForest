@@ -7,7 +7,7 @@ const themeStore = useThemeStore()
 <template>
   <v-btn
     @click="themeStore.toggleMenuDisplay"
-    style="margin-left: 6px"
+    style="margin-left: 6px;"
   >
     <template v-slot:prepend>
       <v-icon size="large">{{ 'mdi-format-align-left' }}</v-icon>

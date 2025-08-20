@@ -19,7 +19,7 @@ export const glacierBlueLight: ThemeDefinition = {
 export const glacierBlueNight: ThemeDefinition = {
     dark: true,
     colors: {
-        background: '#404040',
+        background: '#000000',
         surface: '#2c2c2c',
         primary: '#6390b9',
         'primary-darken-1': '#4f728f',
@@ -29,5 +29,6 @@ export const glacierBlueNight: ThemeDefinition = {
         info: '#90caf9',
         success: '#81c784',
         warning: '#ffb74d',
+        a: '#393939'
     },
 }
